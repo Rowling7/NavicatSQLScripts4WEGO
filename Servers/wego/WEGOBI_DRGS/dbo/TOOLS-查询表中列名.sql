@@ -1,0 +1,5 @@
+--查询表中列名
+SELECT COLUMN_NAME,*
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 't_setlinfo_oprninfo' 
+			AND TABLE_SCHEMA = 'dbo';

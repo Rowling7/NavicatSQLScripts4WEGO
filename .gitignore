@@ -12,3 +12,4 @@ PostgreSQL/
 *.nbakmysql
 *.db-shm
 *.db-wal
+Servers/wego/id_cache.db-wal

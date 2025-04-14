@@ -17,7 +17,7 @@ from (
 		 (
 		 select medcasno, count(0) number, min(dscg_time) time /*出院时间 */ 
 		 from t_setlinfo  
-		 where brjsrq >=  case when isnull( @SettleTimeStart,'') <> '' then @SettleTimeStart 
+		 where brjsrq >=  case when isnull(@SettleTimeStart,'') <> '' then @SettleTimeStart 
 					else dateadd(month,datediff(month,0,getdate()-1)-1,0) 
 					end  
 				 and brjsrq <  case when isnull( @SettleTimeEnd,'') <> '' then DATEADD(day,1, @SettleTimeEnd) 

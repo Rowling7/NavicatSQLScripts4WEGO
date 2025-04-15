@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS FACTORIAL
-
+go
 CREATE PROCEDURE FACTORIAL 
     @startTime datetime,
     @endTime datetime 

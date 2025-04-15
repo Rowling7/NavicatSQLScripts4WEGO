@@ -9,8 +9,8 @@ case when a.dscg_way='1'then '医嘱离院'
 		else '其他' end 离院方式,
 a.days_rinp_flag_31 '出院 31 天内再住院计划标志代码',
 case when a.days_rinp_flag_31 ='1'then '有' else '无' end '出院 31 天内再住院计划标志',a.*
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_abnormal d on c.id = d.drgresult_id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -26,7 +26,7 @@ where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 							)
 					)
 			and d.type=3 --3 低倍率 2 高倍率
-			and isnull(a.act_ipt_days,0) <=3 
+			and isnull(a.act_ipt_days,0) <=3
 			and a.days_rinp_flag_31<>'1'
 order by '离院方式'
 
@@ -35,8 +35,8 @@ order by '离院方式'
 
 --入组失败原因之 主诊与手术不符
 select a.mdtrt_sn 就诊流水号,case when c.errormsg is null then '主诊与手术不符' else c.errormsg end 错误信息,d.code 手术编码,d.name 手术名称,e.diag_code 诊断编码,e.diag_name 诊断名称,e.maindiag_flag,a.*
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_operation d on d.drgresult_id=c.id
 left join t_setlinfo_diseinfo e on a.mdtrt_sn=e.mdtrt_sn
@@ -61,8 +61,8 @@ and a.mdtrt_sn in (
 
 --入组失败原因
 select a.mdtrt_sn
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 and c.code <> 1
@@ -74,7 +74,7 @@ and a.mdtrt_sn  not in (
 ,'153146001-001'
 ,'139768002-001'
 ,'153678001-001'
-))) 
+)))
 and c.errormsg like'%无效%'
 )
 order by a.mdtrt_sn

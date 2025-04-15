@@ -1,7 +1,7 @@
 declare @settleTimeStart datetime,@settleTimeEnd datetime;
 set @settleTimeStart ='2024-01-01';
 set @settleTimeEnd ='2024-12-31';
-select  
+select
 case when cyksbm is null  then '不详' else cyksbm end  出院科室
 ,count(*)  例数
 ,case when datalength(cast(insuplc as varchar(255)))=6 then '本地' else '省内异地' end 本地异地
@@ -29,29 +29,29 @@ sum(d.medical_fee) 其他费,
 sum(d.medical_fee)/sum(totalcost)*100 其他费占比,
 sum(d.medical_fee)/count(0) 人均其他费
   from t_drg_result a
-  ,t_drg_result_relation b 
+  ,t_drg_result_relation b
   ,t_setlinfo d
    where a.id=b.drgresult_id and a.jzlsh=d.mdtrt_sn  and
 settletime>=
-case 
+case
 when isnull(@settleTimeStart,'') <> ''
 then @settleTimeStart
 else
 dateadd(month,datediff(month,0,getdate()-1)-1,0)
 end
-and 
+and
  settletime<
-case 
+case
 when isnull(@settleTimeEnd,'') <> ''
 then DATEADD(day,1,@settleTimeEnd)
 else
 DATEADD(day,1,dateadd(month,datediff(month,01,getdate()),-1))
 end
---and 
+--and
 --case when datalength(cast(insuplc as varchar(255)))=6 then '本地' else '省内异地' end like @bdyd
 --and d.hi_type like @hi_type
 and isdrg=1
-group by  
+group by
 case when datalength(cast(insuplc as varchar(255)))=6 then '本地' else '省内异地' end,case when cyksbm is null  then '不详' else cyksbm end
 with rollup
 order by case when cyksbm is null  then '不详' else cyksbm end desc

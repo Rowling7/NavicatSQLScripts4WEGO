@@ -4,7 +4,7 @@ set @settleTimeStart ='2024-01-01';
 set @settleTimeEnd ='2024-12-31';
 
 
-SELECT 
+SELECT
 res.科室
 ,res.总例数
 ,res.[RW0-0.5例数]
@@ -19,7 +19,7 @@ res.科室
 ,res.[RW3-4占比]
 ,res.[大于4例数]
 ,res.[大于4占比]
-from 
+from
 (
 	select
 	case when c.CYKSbm is null then '未匹配科室' else  c.CYKSbm end    科室
@@ -43,18 +43,18 @@ from
 		,grouping(case when c.CYKSbm is null then '未匹配科室' else  c.CYKSbm end) isTotal
 	from t_drg_result a ,t_drg_result_relation b ,t_setlinfo c
 	where a.id=b.drgresult_id and  a.jzlsh=c.mdtrt_sn
-	and  
+	and
 	brjsrq>=
-	case 
+	case
 	when isnull(@settleTimeStart,'') <> ''
 	then @settleTimeStart
 	else
 	dateadd(month,datediff(month,0,getdate()-1)-1,0)
 	end
 
-	and 
+	and
 	 brjsrq<
-	case 
+	case
 	when isnull(@settleTimeEnd,'') <> ''
 	then DATEADD(day,1,@settleTimeEnd)
 	else
@@ -65,4 +65,4 @@ from
 	and c.hi_type<>'999'
 	group by case when c.CYKSbm is null then '未匹配科室' else  c.CYKSbm end  with rollup
 )res
-	order by  res.isTotal,res.总例数 desc 
+	order by  res.isTotal,res.总例数 desc

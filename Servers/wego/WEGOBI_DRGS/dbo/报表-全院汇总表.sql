@@ -5,12 +5,12 @@ set @settleTimeEnd ='2024-12-31';
 WITH LstTotalRW AS (
     SELECT rw, COUNT(0) AS cnt
     from t_drg_result a
-		,t_drg_result_relation b 
+		,t_drg_result_relation b
 		,t_setlinfo c
-		where 
+		where
 		a.id=b.drgresult_id and a.jzlsh=c.mdtrt_sn and c.isdrg=1
 		--<查询时间范围
-		and settletime>=case 
+		and settletime>=case
 				when isnull(@settleTimeStart,'') <> ''then @settleTimeStart
 				else dateadd(month,datediff(month,0,getdate()-1)-1,0)
 		end
@@ -24,9 +24,9 @@ WITH LstTotalRW AS (
 PstTotalRW AS (
     SELECT rw, COUNT(0) AS cnt
     from t_drg_result a
-		,t_drg_result_relation b 
+		,t_drg_result_relation b
 		,t_setlinfo c
-		where 
+		where
 		a.id=b.drgresult_id and a.jzlsh=c.mdtrt_sn and c.isdrg=1
 		--<查询时间范围
 		and settletime>=case when isnull(@settleTimeStart,'') <> ''then dateadd(YEAR ,-1,@settleTimeStart)
@@ -39,14 +39,14 @@ PstTotalRW AS (
 )
 
 
-select  
+select
 year(@settleTimeEnd) 年份
 ,count(*)  例数
 ,sum(settlepoint)  总点数
 ,(SELECT SUM(rw * cnt) AS total FROM LstTotalRW) 当期总权重
 ,(SELECT SUM(rw * cnt) AS total FROM PstTotalRW) 上年同期总权重
-,case when (SELECT SUM(rw * cnt) AS total FROM PstTotalRW) is null or (SELECT SUM(rw * cnt) AS total FROM PstTotalRW) = 0 then null 
-			when (SELECT SUM(rw * cnt) AS total FROM LstTotalRW) is null or (SELECT SUM(rw * cnt) AS total FROM LstTotalRW) = 0 then null 
+,case when (SELECT SUM(rw * cnt) AS total FROM PstTotalRW) is null or (SELECT SUM(rw * cnt) AS total FROM PstTotalRW) = 0 then null
+			when (SELECT SUM(rw * cnt) AS total FROM LstTotalRW) is null or (SELECT SUM(rw * cnt) AS total FROM LstTotalRW) = 0 then null
 			else concat(convert(decimal(18,2),((SELECT SUM(rw * cnt) AS total FROM LstTotalRW)/(SELECT SUM(rw * cnt) AS total FROM PstTotalRW)-1)*100),'%') end '实际发生总权重（总分值）增长率'
 ,sum(drug_fee)   药费
 ,sum(consumable_fee)   材料费
@@ -58,10 +58,10 @@ year(@settleTimeEnd) 年份
 ,sum(profitloss)  预计盈亏
 
 from t_drg_result a
-,t_drg_result_relation b 
+,t_drg_result_relation b
 ,t_setlinfo c
 
-where 
+where
 a.id=b.drgresult_id and a.jzlsh=c.mdtrt_sn and c.isdrg=1
 --<查询时间范围
 and settletime>=case when isnull(@settleTimeStart,'') <> ''then @settleTimeStart

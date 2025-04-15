@@ -10,7 +10,7 @@ update t_setlinfo set hi_type='390' where mdtrt_sn in (select zylsh from t_job_s
 
 delete t_drg_result_relation /*入组信息关联*/where uid in (select mdtrt_sn from t_setlinfo a left join t_drg_result_relation b on a.mdtrt_sn=b.uid left join t_drg_result c on b.drgresult_id=c.id where a.hi_type <> c.insurtype)
 
- 
+
 SELECT * FROM t_setlinfo /*结算清单患者基本信息表*/where brjsrq>='2021-07-01' and brjsrq<'2024-08-01' AND isdrg=1 and hi_type='390'/*医保类型为城乡*/;
 
 SELECT zylsh
@@ -22,9 +22,9 @@ SELECT zylsh
 
  --执行对数脚本
 update  a  set  a.isdrg=1 ,a.hi_type=b.insuranceid /*医保类型*/
-from   t_setlinfo  a  
-	,( select distinct zylsh,insuranceid from  t_job_settlebillinglist    
-			where convert(date,datebill,23) between '2024-12-01'  and '2024-12-31'    and 
-			medicalhosid =1  
- 	  )  b 
+from   t_setlinfo  a
+	,( select distinct zylsh,insuranceid from  t_job_settlebillinglist
+			where convert(date,datebill,23) between '2024-12-01'  and '2024-12-31'    and
+			medicalhosid =1
+ 	  )  b
  where a.mdtrt_sn=b.zylsh      ;

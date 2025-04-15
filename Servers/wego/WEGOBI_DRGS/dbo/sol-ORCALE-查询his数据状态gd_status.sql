@@ -1,4 +1,4 @@
-SELECT 
+SELECT
 	MDTRT_SN '就诊流水号'
 	,BRJSRQ '病人结算日期'
 	,PSN_NAME '患者姓名'

@@ -9,8 +9,8 @@ SELECT lst.组编码
 ,lst.总点数
 ,lst.总权重 总权重
 ,pst.总权重 上年同期总权重
-,case when pst.总权重 is null or pst.总权重 = 0 then null 
-			when lst.总权重 is null or lst.总权重 = 0 then null 
+,case when pst.总权重 is null or pst.总权重 = 0 then null
+			when lst.总权重 is null or lst.总权重 = 0 then null
 			else concat(convert(decimal(18,2),(lst.总权重/pst.总权重-1)*100),'%') end '实际发生总权重（总分值）增长率'
 ,lst.药费
 ,lst.材料费
@@ -20,20 +20,20 @@ SELECT lst.组编码
 ,lst.平均住院日
 ,lst.预计结算金额
 ,lst.预计盈亏
-from 
+from
 (
-select  
-case 
+select
+case
 when a.drgcode is null
 then '未入组'
 else
-a.drgcode 
+a.drgcode
 end 组编码,
-case 
+case
 when a.drgname is null
 then '未入组'
 else
-a.drgname  
+a.drgname
 end 组名
 ,count(*)  例数
 ,a.rw 权重
@@ -48,87 +48,86 @@ end 组名
 ,sum(settlecost)  预计结算金额
 ,sum(profitloss)  预计盈亏
   from t_drg_result a
-  ,t_drg_result_relation b 
+  ,t_drg_result_relation b
   ,t_setlinfo c
- 
-  where 
+
+  where
   a.id=b.drgresult_id   and a.jzlsh=c.mdtrt_sn
   and c.isdrg=1
-  and 
+  and
 settletime>=
-case 
+case
 when isnull(@settleTimeStart,'') <> ''
 then @settleTimeStart
 else
 dateadd(month,datediff(month,0,getdate()-1)-1,0)
 end
 
-and 
+and
  settletime<
-case 
+case
 when isnull(@settleTimeEnd,'') <> ''
 then DATEADD(day,1,@settleTimeEnd)
 else
 DATEADD(day,1,dateadd(month,datediff(month,01,getdate()),-1))
 end
- group by case 
+ group by case
 when a.drgcode is null
 then '未入组'
 else
-a.drgcode  
+a.drgcode
 end  ,
-case 
+case
 when a.drgname is null
 then '未入组'
 else
-a.drgname  
+a.drgname
 end   ,a.rw
 ) lst
---FULL OUTER JOIN 
-left join 
+--FULL OUTER JOIN
+left join
 (
 select
-case 
+case
 when a.drgcode is null
 then '未入组'
 else
-a.drgcode 
+a.drgcode
 end 组编码
 ,a.rw*count(0) 总权重
 from t_drg_result a
-,t_drg_result_relation b 
+,t_drg_result_relation b
 ,t_setlinfo c
-where 
+where
 a.id=b.drgresult_id   and a.jzlsh=c.mdtrt_sn
 and c.isdrg=1
-and 
+and
 settletime>=
-case 
+case
 when isnull(@settleTimeStart,'') <> ''
 then dateadd(year,-1,@settleTimeStart)
 else
 dateadd(year,-1,dateadd(month,datediff(month,0,getdate()-1)-1,0))
 end
 
-and 
+and
  settletime<
-case 
+case
 when isnull(@settleTimeEnd,'') <> ''
 then dateadd(year,-1,DATEADD(day,1,@settleTimeEnd))
 else
 dateadd(year,-1,DATEADD(day,1,dateadd(month,datediff(month,01,getdate()),-1)))
 end
-group by case 
+group by case
 when a.drgcode is null
 then '未入组'
 else
-a.drgcode 
+a.drgcode
 end ,a.rw
  )pst on lst.组编码=pst.组编码
- 
+
 UNION
 
 
 
 order by lst.总权重 desc
- 

@@ -6,8 +6,8 @@ count(case when c.code = 1 then c.jzlsh end ) 入组成功例数
 ,count(case when len(a.fixmedins_code)>8
 						and a.mdtrt_sn  not in ('153506001-001','052200005-001','153146001-001','139768002-001','153678001-001'
 						) then c.jzlsh end ) 省内异地
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 			and (a.isdrg=1 /*是否DRG结算 1 是*/
@@ -19,8 +19,8 @@ SELECT distinct fixmedins_code from t_setlinfo
 
 --入组失败原因
 select c.errormsg,count(*)
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 and c.code <> 1
@@ -39,8 +39,8 @@ and a.mdtrt_sn  not in (
 
 --入组失败原因之 主诊与手术不符
 select a.mdtrt_sn,case when c.errormsg is null then '主诊与手术不符' else c.errormsg end 错误信息,d.code 手术编码,d.name 手术名称,e.diag_code 诊断编码,e.diag_name 诊断名称, e.maindiag_flag 主诊断标志
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_operation d on d.drgresult_id=c.id
 left join t_setlinfo_diseinfo e on a.mdtrt_sn=e.mdtrt_sn
@@ -60,12 +60,12 @@ and c.errormsg is null
 
 
 
-select 
+select
 count(case when d.type=3 then c.jzlsh end ) 低倍率
 ,count(case when d.type=2 then c.jzlsh end ) 高倍率
 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_abnormal d on c.id = d.drgresult_id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -91,8 +91,8 @@ case when a.dscg_way='1'then '医嘱离院'
 		else '其他' end 离院方式,
 a.days_rinp_flag_31 '出院 31 天内再住院计划标志代码',
 case when a.days_rinp_flag_31 ='1'then '有' else '无' end '出院 31 天内再住院计划标志'
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_abnormal d on c.id = d.drgresult_id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -108,17 +108,17 @@ where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 							)
 					)
 			and d.type=3 --3 低倍率 2 高倍率
-			and isnull(a.act_ipt_days,0) <=3 
+			and isnull(a.act_ipt_days,0) <=3
 			and a.days_rinp_flag_31<>'1'
 order by 离院方式
 
 
 
-select 
+select
 count(case when a.is_rjbf=1 then c.jzlsh end ) 日间病房
 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_abnormal d on c.id = d.drgresult_id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -137,13 +137,13 @@ and a.mdtrt_sn  not in (
 
 
 --盈利
-select 
+select
 c.drgcode drg组编码
 ,c.drgname drg组名称
 ,sum(c.profitloss) 预计盈亏
 ,count(*) 例数
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 and c.drgcode is not null
@@ -162,13 +162,13 @@ order by sum(c.profitloss) desc
 
 
 --亏损
-select 
+select
 c.drgcode drg组编码
 ,c.drgname drg组名称
 ,sum(c.profitloss) 预计盈亏
 ,count(*) 例数
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 and c.drgcode is not null
@@ -187,7 +187,7 @@ order by sum(c.profitloss) asc
 
 
 
-select 
+select
 c.drgcode drg组编码
 ,c.drgname drg组名称
 ,c.basepoint 基准点数
@@ -195,11 +195,11 @@ c.drgcode drg组编码
 ,sum(c.profitloss) 预计盈亏
 ,convert(decimal(18,2),sum(c.profitloss)/count(c.jzlsh)) 例均盈亏
 ,convert(decimal(18,2),sum(c.settlecost)/count(c.jzlsh)) 例均结算费用
-,convert(decimal(18,2),sum(a.total_fee)/count(c.jzlsh)) 例均实际费用 
+,convert(decimal(18,2),sum(a.total_fee)/count(c.jzlsh)) 例均实际费用
 ,d.c310 职工
 --,d.c390 居民
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_coefficient d on d.drgcode=c.drgcode and d.year = '2024'
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -222,9 +222,9 @@ order by sum(c.profitloss) asc
 
 --整体数据分析
 select c.drgcode DRG组编码,sum(c.profitloss) 预计盈亏,convert(decimal(18,2),sum(a.total_fee)
-/count(c.jzlsh)) 平均费用 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+/count(c.jzlsh)) 平均费用
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 and c.drgcode is not null
@@ -238,16 +238,16 @@ and a.mdtrt_sn  not in (
 ,'153678001-001'
 )))
 group by c.drgcode
-having sum(c.profitloss)>0  
+having sum(c.profitloss)>0
 
 
 
 
 --数据概况
 select c.insurtype,
-count(c.jzlsh) 例数,sum(c.profitloss) 预计盈亏,convert(decimal(18,2),sum(a.total_fee)/count(c.jzlsh)) 平均费用 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+count(c.jzlsh) 例数,sum(c.profitloss) 预计盈亏,convert(decimal(18,2),sum(a.total_fee)/count(c.jzlsh)) 平均费用
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 --and c.drgcode is not null
@@ -275,8 +275,8 @@ select c.drgcode DRG组编码
 ,convert(decimal(18,2),sum(c.settlecost)/count(c.jzlsh)) 例均结算费用
 ,convert(decimal(18,2),sum(a.total_fee)/count(c.jzlsh)) 例均实际费用
 ,d.c390
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_coefficient d on c.drgcode = d.drgcode and d.year = '2024'
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -322,7 +322,7 @@ select * from t_drg_coefficient where drgcode in(
 
 
 
-select * from t_setlinfo where convert(date,brjsrq,23) between '2023-01-01' and '2023-12-31' 
+select * from t_setlinfo where convert(date,brjsrq,23) between '2023-01-01' and '2023-12-31'
 and (isdrg=1
 or (len(fixmedins_code)>8
 and mdtrt_sn  not in (
@@ -340,11 +340,11 @@ and mdtrt_sn  not in (
 
 
 --科室盈亏分析
-select 
+select
 a.cyksbm 科室,count(c.jzlsh) 例数,sum(c.profitloss) 预计盈亏,convert(decimal(18,2),sum(c.profitloss)
-/count(c.jzlsh)) 平均费用 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+/count(c.jzlsh)) 平均费用
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 --and c.drgcode is not null
@@ -356,7 +356,7 @@ and a.mdtrt_sn  not in (
 ,'153146001-001'
 ,'139768002-001'
 ,'153678001-001'
-))) 
+)))
 group by a.cyksbm
 having count(c.jzlsh)>20
 order by sum(c.profitloss) desc
@@ -364,11 +364,11 @@ order by sum(c.profitloss) desc
 
 
 --科室入组率
-select 
+select
 a.cyksbm 科室,count(c.jzlsh) 例数
 ,(convert(decimal(18,2),isnull(convert(decimal(18,4),nullif(count(case when c.code =1 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)*100)) 入组率
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 --and c.drgcode is not null
@@ -387,25 +387,25 @@ order by (convert(decimal(18,2),isnull(convert(decimal(18,4),nullif(count(case w
 
 
 --科室rw 分布
-select 
+select
 case when a.cyksbm is null then '未匹配科室' else a.cyksbm end as 出院科室
 ,count(c.jzlsh) 出院人次
 
-,isnull(isnull(count(case when c.rw>=0 and c.rw<0.5 then c.jzlsh end),0),0) 'RW0-0.5例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=0 and c.rw<0.5 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW0-0.5占比' 
-,isnull(isnull(count(case when c.rw>=0.5 and c.rw<1 then c.jzlsh end),0),0) 'RW0.5-1例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=0.5 and c.rw<1 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))   'RW0.5-1占比'  
-,isnull(isnull(count(case when c.rw>=1 and c.rw<2 then c.jzlsh end),0),0) 'RW1-2例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=1 and c.rw<2 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW1-2占比'  
-,isnull(isnull(count(case when c.rw>=2 and c.rw<3 then c.jzlsh end),0),0) 'RW2-3例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=2 and c.rw<3 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW2-3占比' 
-,isnull(isnull(count(case when c.rw>=3 and c.rw<4 then c.jzlsh end),0),0) 'RW3-4例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=3 and c.rw<4 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))   'RW3-4占比' 
-,isnull(isnull(count(case when c.rw>=4 then c.jzlsh end),0),0) 'RW>4例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=4 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW>4占比' 
+,isnull(isnull(count(case when c.rw>=0 and c.rw<0.5 then c.jzlsh end),0),0) 'RW0-0.5例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=0 and c.rw<0.5 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW0-0.5占比'
+,isnull(isnull(count(case when c.rw>=0.5 and c.rw<1 then c.jzlsh end),0),0) 'RW0.5-1例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=0.5 and c.rw<1 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))   'RW0.5-1占比'
+,isnull(isnull(count(case when c.rw>=1 and c.rw<2 then c.jzlsh end),0),0) 'RW1-2例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=1 and c.rw<2 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW1-2占比'
+,isnull(isnull(count(case when c.rw>=2 and c.rw<3 then c.jzlsh end),0),0) 'RW2-3例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=2 and c.rw<3 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW2-3占比'
+,isnull(isnull(count(case when c.rw>=3 and c.rw<4 then c.jzlsh end),0),0) 'RW3-4例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=3 and c.rw<4 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))   'RW3-4占比'
+,isnull(isnull(count(case when c.rw>=4 then c.jzlsh end),0),0) 'RW>4例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=4 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW>4占比'
 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 --and c.drgcode is not null
@@ -469,15 +469,15 @@ order by sum(jzlsh) desc ;
 
 
 
-select 
+select
 year(brjsrq),c.drgcode,c.basepoint 基准点数,count(c.jzlsh) 例数,a.hi_type 医保类型,
 convert(decimal(18,2),sum(a.total_fee)/count(c.jzlsh)) 例均实际费用 ,
 convert(decimal(18,2),sum(c.profitloss)/count(c.jzlsh)) 例均盈亏
 ,convert(decimal(18,2),sum(c.settlecost)/count(c.jzlsh)) 例均结算费用
 ,sum(c.settlecost)
-,convert(decimal(18,2),sum(a.act_ipt_days )/convert(decimal(18,2), count(distinct c.jzlsh)) ) 
-from  t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+,convert(decimal(18,2),sum(a.act_ipt_days )/convert(decimal(18,2), count(distinct c.jzlsh)) )
+from  t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2022-01-01' and '2022-12-31'
 and c.drgcode in  (
@@ -606,13 +606,13 @@ order by a.hi_type
 
 
 --21年医疗机构＋省内异地
-select * from t_setlinfo where convert(date,brjsrq,23) between '2021-01-01' and '2021-12-31' 
+select * from t_setlinfo where convert(date,brjsrq,23) between '2021-01-01' and '2021-12-31'
 and isdrg=1 and mdtrt_sn <> '101785013-002'
 
 
 select c.settlecost
-from  t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from  t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2021-01-01' and '2021-12-31'
 and isdrg=1 and mdtrt_sn <> '101785013-002'
@@ -623,7 +623,7 @@ select * from t_drg_result where settletime  between '2021-01-01' and '2022-12-3
 
 
 --22年医疗机构＋省内异地
-select * from t_setlinfo where convert(date,brjsrq,23) between '2022-01-01' and '2022-12-31' 
+select * from t_setlinfo where convert(date,brjsrq,23) between '2022-01-01' and '2022-12-31'
 and (isdrg=1
 or (len(fixmedins_code)>8
 and mdtrt_sn  not in (
@@ -743,7 +743,7 @@ and mdtrt_sn  not in (
 
 
 ----23年医疗机构＋省内异地
-select * from t_setlinfo where convert(date,brjsrq,23) between '2023-01-01' and '2023-12-31' 
+select * from t_setlinfo where convert(date,brjsrq,23) between '2023-01-01' and '2023-12-31'
 and (isdrg=1
 or (len(fixmedins_code)>8
 and mdtrt_sn  not in (
@@ -761,8 +761,8 @@ and mdtrt_sn  not in (
 
 
 select a.mdtrt_sn,a.total_fee,c.profitloss,c.settlecost,a.act_ipt_days
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_abnormal d on c.id = d.drgresult_id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -785,8 +785,8 @@ order by a.act_ipt_days asc
 
 
 
-select c.profitloss,c.settlecost,a.act_ipt_days from t_setlinfo  a  
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+select c.profitloss,c.settlecost,a.act_ipt_days from t_setlinfo  a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_abnormal d on c.id = d.drgresult_id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -804,9 +804,9 @@ and mdtrt_sn  not in (
 
 --整体数据分析
 select c.drgcode DRG组编码,sum(c.profitloss) 预计盈亏,convert(decimal(18,2),sum(a.total_fee)
-/count(c.jzlsh)) 平均费用 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+/count(c.jzlsh)) 平均费用
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 and c.drgcode is not null
@@ -820,7 +820,7 @@ and a.mdtrt_sn  not in (
 ,'153678001-001'
 )))
 group by c.drgcode
-having sum(c.profitloss)>0  
+having sum(c.profitloss)>0
 
 
 
@@ -828,9 +828,9 @@ having sum(c.profitloss)>0
 --数据概况
 select c.insurtype,
 count(c.jzlsh) 例数,sum(c.profitloss) 预计盈亏,convert(decimal(18,2),sum(a.total_fee)
-/count(c.jzlsh)) 平均费用 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+/count(c.jzlsh)) 平均费用
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 --and c.drgcode is not null
@@ -858,8 +858,8 @@ select c.drgcode DRG组编码
 ,convert(decimal(18,2),sum(c.settlecost)/count(c.jzlsh)) 例均结算费用
 ,convert(decimal(18,2),sum(a.total_fee)/count(c.jzlsh)) 例均实际费用
 ,d.c390
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_coefficient d on c.drgcode = d.drgcode and d.year = '2024'
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -905,7 +905,7 @@ select * from t_drg_coefficient where drgcode in(
 
 
 
-select * from t_setlinfo where convert(date,brjsrq,23) between '2023-01-01' and '2023-12-31' 
+select * from t_setlinfo where convert(date,brjsrq,23) between '2023-01-01' and '2023-12-31'
 and (isdrg=1
 or (len(fixmedins_code)>8
 and mdtrt_sn  not in (
@@ -923,11 +923,11 @@ and mdtrt_sn  not in (
 
 
 --科室盈亏分析
-select 
+select
 a.cyksbm 科室,count(c.jzlsh) 例数,sum(c.profitloss) 预计盈亏,convert(decimal(18,2),sum(c.profitloss)
-/count(c.jzlsh)) 平均费用 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+/count(c.jzlsh)) 平均费用
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 --and c.drgcode is not null
@@ -939,7 +939,7 @@ and a.mdtrt_sn  not in (
 ,'153146001-001'
 ,'139768002-001'
 ,'153678001-001'
-))) 
+)))
 group by a.cyksbm
 having count(c.jzlsh)>20
 order by sum(c.profitloss) desc
@@ -947,11 +947,11 @@ order by sum(c.profitloss) desc
 
 
 --科室入组率
-select 
+select
 a.cyksbm 科室,count(c.jzlsh) 例数
 ,(convert(decimal(18,2),isnull(convert(decimal(18,4),nullif(count(case when c.code =1 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)*100)) 入组率
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 --and c.drgcode is not null
@@ -970,25 +970,25 @@ order by (convert(decimal(18,2),isnull(convert(decimal(18,4),nullif(count(case w
 
 
 --科室rw 分布
-select 
+select
 case when a.cyksbm is null then '未匹配科室' else a.cyksbm end as 出院科室
 ,count(c.jzlsh) 出院人次
 
-,isnull(isnull(count(case when c.rw>=0 and c.rw<0.5 then c.jzlsh end),0),0) 'RW0-0.5例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=0 and c.rw<0.5 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW0-0.5占比' 
-,isnull(isnull(count(case when c.rw>=0.5 and c.rw<1 then c.jzlsh end),0),0) 'RW0.5-1例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=0.5 and c.rw<1 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))   'RW0.5-1占比'  
-,isnull(isnull(count(case when c.rw>=1 and c.rw<2 then c.jzlsh end),0),0) 'RW1-2例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=1 and c.rw<2 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW1-2占比'  
-,isnull(isnull(count(case when c.rw>=2 and c.rw<3 then c.jzlsh end),0),0) 'RW2-3例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=2 and c.rw<3 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW2-3占比' 
-,isnull(isnull(count(case when c.rw>=3 and c.rw<4 then c.jzlsh end),0),0) 'RW3-4例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=3 and c.rw<4 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))   'RW3-4占比' 
-,isnull(isnull(count(case when c.rw>=4 then c.jzlsh end),0),0) 'RW>4例数' 
-,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=4 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW>4占比' 
+,isnull(isnull(count(case when c.rw>=0 and c.rw<0.5 then c.jzlsh end),0),0) 'RW0-0.5例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=0 and c.rw<0.5 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW0-0.5占比'
+,isnull(isnull(count(case when c.rw>=0.5 and c.rw<1 then c.jzlsh end),0),0) 'RW0.5-1例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=0.5 and c.rw<1 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))   'RW0.5-1占比'
+,isnull(isnull(count(case when c.rw>=1 and c.rw<2 then c.jzlsh end),0),0) 'RW1-2例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=1 and c.rw<2 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW1-2占比'
+,isnull(isnull(count(case when c.rw>=2 and c.rw<3 then c.jzlsh end),0),0) 'RW2-3例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=2 and c.rw<3 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW2-3占比'
+,isnull(isnull(count(case when c.rw>=3 and c.rw<4 then c.jzlsh end),0),0) 'RW3-4例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=3 and c.rw<4 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))   'RW3-4占比'
+,isnull(isnull(count(case when c.rw>=4 then c.jzlsh end),0),0) 'RW>4例数'
+,(convert(decimal(18,4),isnull(convert(decimal(18,4),nullif(count(case when c.rw>=4 then c.jzlsh end),0) / convert(decimal(18,4),isnull(count(c.jzlsh),0))),0)))  'RW>4占比'
 
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
 --and c.drgcode is not null
@@ -1052,15 +1052,15 @@ order by sum(jzlsh) desc ;
 
 
 
-select 
+select
 year(brjsrq),c.drgcode,c.basepoint 基准点数,count(c.jzlsh) 例数,a.hi_type 医保类型,
 convert(decimal(18,2),sum(a.total_fee)/count(c.jzlsh)) 例均实际费用 ,
 convert(decimal(18,2),sum(c.profitloss)/count(c.jzlsh)) 例均盈亏
 ,convert(decimal(18,2),sum(c.settlecost)/count(c.jzlsh)) 例均结算费用
 ,sum(c.settlecost)
-,convert(decimal(18,2),sum(a.act_ipt_days )/convert(decimal(18,2), count(distinct c.jzlsh)) ) 
-from  t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+,convert(decimal(18,2),sum(a.act_ipt_days )/convert(decimal(18,2), count(distinct c.jzlsh)) )
+from  t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2022-01-01' and '2022-12-31'
 and c.drgcode in  (
@@ -1189,13 +1189,13 @@ order by a.hi_type
 
 
 --21年医疗机构＋省内异地
-select * from t_setlinfo where convert(date,brjsrq,23) between '2021-01-01' and '2021-12-31' 
+select * from t_setlinfo where convert(date,brjsrq,23) between '2021-01-01' and '2021-12-31'
 and isdrg=1 and mdtrt_sn <> '101785013-002'
 
 
 select c.settlecost
-from  t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from  t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 where convert(date,a.brjsrq,23) between '2021-01-01' and '2021-12-31'
 and isdrg=1 and mdtrt_sn <> '101785013-002'
@@ -1206,7 +1206,7 @@ select * from t_drg_result where settletime  between '2021-01-01' and '2022-12-3
 
 
 --22年医疗机构＋省内异地
-select * from t_setlinfo where convert(date,brjsrq,23) between '2022-01-01' and '2022-12-31' 
+select * from t_setlinfo where convert(date,brjsrq,23) between '2022-01-01' and '2022-12-31'
 and (isdrg=1
 or (len(fixmedins_code)>8
 and mdtrt_sn  not in (
@@ -1326,7 +1326,7 @@ and mdtrt_sn  not in (
 
 
 ----23年医疗机构＋省内异地
-select * from t_setlinfo where convert(date,brjsrq,23) between '2023-01-01' and '2023-12-31' 
+select * from t_setlinfo where convert(date,brjsrq,23) between '2023-01-01' and '2023-12-31'
 and (isdrg=1
 or (len(fixmedins_code)>8
 and mdtrt_sn  not in (
@@ -1344,8 +1344,8 @@ and mdtrt_sn  not in (
 
 
 select a.mdtrt_sn,a.total_fee,c.profitloss,c.settlecost,a.act_ipt_days
-from t_setlinfo a 
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+from t_setlinfo a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_abnormal d on c.id = d.drgresult_id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'
@@ -1368,8 +1368,8 @@ order by a.act_ipt_days asc
 
 
 
-select c.profitloss,c.settlecost,a.act_ipt_days from t_setlinfo  a  
-left join t_drg_result_relation b on a.mdtrt_sn=b.uid 
+select c.profitloss,c.settlecost,a.act_ipt_days from t_setlinfo  a
+left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
 left join t_drg_result_abnormal d on c.id = d.drgresult_id
 where convert(date,a.brjsrq,23) between '2024-01-01' and '2024-12-31'

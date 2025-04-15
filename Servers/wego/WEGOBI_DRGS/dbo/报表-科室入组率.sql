@@ -20,12 +20,12 @@ res.出院科室
 ,res.医务性收入
 ,res.总费用
 from (
-select  
+select
 case when cyksbm is null  then '不详' else cyksbm end  出院科室
 ,count(*)  例数
 ,case when datalength(cast(insuplc as varchar(255)))=6 then '本地' else '省内异地' end 本地异地
 ,count(distinct case when a.drgcode is  not null  and  a.isqy <>1   then a.jzlsh end) 入组例数
-,  
+,
 cast(count(distinct case when a.drgcode is  not null  and  a.isqy <>1  then a.jzlsh end) /cast(count(*) as decimal(18,4))  as decimal(18,4))*100  入组率
 ,count(distinct a.drgcode) DRG组数
 ,cast(sum(totalcost)/cast(nullif(count(*),0)  as decimal(18,2))  as decimal(18,2))平均费用
@@ -39,21 +39,21 @@ cast(count(distinct case when a.drgcode is  not null  and  a.isqy <>1  then a.jz
 ,sum(total_fee) 总费用
 ,grouping(case when cyksbm is null  then '不详' else cyksbm end) isTotal
    from t_drg_result a
-  ,t_drg_result_relation b 
-  ,t_setlinfo d 
-  where  a.id=b.drgresult_id and a.jzlsh=d.mdtrt_sn  
- and  
+  ,t_drg_result_relation b
+  ,t_setlinfo d
+  where  a.id=b.drgresult_id and a.jzlsh=d.mdtrt_sn
+ and
 brjsrq>=
-case 
+case
 when isnull(@settleTimeStart,'') <> ''
 then @settleTimeStart
 else
 dateadd(month,datediff(month,0,getdate()-1)-1,0)
 end
 
-and 
+and
  brjsrq<
-case 
+case
 when isnull(@settleTimeEnd,'') <> ''
 then DATEADD(day,1,@settleTimeEnd)
 else

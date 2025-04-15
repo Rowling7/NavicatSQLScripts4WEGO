@@ -11,13 +11,13 @@ drop table if exists #temp3;
 select * into  #temp1 from (select '时值' 期,
 count(0) 出院人次,
 count(
-case 
+case
 when c.profitloss>=0
 then 1
 end
 ) 预计盈利人次,
 count(
-case 
+case
 when c.profitloss<0
 then 1
 end
@@ -53,18 +53,18 @@ convert(decimal(18,2),sum(a.medical_fee)/nullif(sum(totalcost)*100,0)) 医务性
 from t_setlinfo a
 left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
-where 
+where
 brjsrq>=
-case 
+case
 when isnull(@settleTimeStart,'') <> ''
 then @settleTimeStart
 else
 dateadd(month,datediff(month,0,getdate()-1)-1,0)
 end
 
-and 
+and
  brjsrq<
-case 
+case
 when isnull(@settleTimeEnd,'') <> ''
 then DATEADD(day,1,@settleTimeEnd)
 else
@@ -78,13 +78,13 @@ and a.cyksbm like '%%') as aa
 select * into #temp2 from (select '上一期' 期,
 count(0) 出院人次,
 count(
-case 
+case
 when c.profitloss>=0
 then 1
 end
 ) 预计盈利人次,
 count(
-case 
+case
 when c.profitloss<0
 then 1
 end
@@ -120,33 +120,33 @@ convert(decimal(18,2),sum(a.medical_fee)/nullif(sum(totalcost)*100,0)) 医务性
 from t_setlinfo a
 left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
-where 
-brjsrq>=DATEADD(mm,-DATEDIFF(m, case 
+where
+brjsrq>=DATEADD(mm,-DATEDIFF(m, case
 when isnull(@settleTimeStart,'') <> ''
 then @settleTimeStart
 else
 dateadd(month,datediff(month,0,getdate()-1)-1,0)
-end, case 
+end, case
 when isnull(@settleTimeEnd,'') <> ''
 then DATEADD(day,1,@settleTimeEnd)
 else
 DATEADD(day,1,dateadd(month,datediff(month,01,getdate()),-1))
-end) ,case 
+end) ,case
 when isnull(@settleTimeStart,'') <> ''
 then @settleTimeStart
 else
 dateadd(month,datediff(month,0,getdate()-1)-1,0)
-end) and brjsrq<DATEADD(mm,-DATEDIFF(m, case 
+end) and brjsrq<DATEADD(mm,-DATEDIFF(m, case
 when isnull(@settleTimeStart,'') <> ''
 then @settleTimeStart
 else
 dateadd(month,datediff(month,0,getdate()-1)-1,0)
-end, case 
+end, case
 when isnull(@settleTimeEnd,'') <> ''
 then DATEADD(day,1,@settleTimeEnd)
 else
 DATEADD(day,1,dateadd(month,datediff(month,01,getdate()),-1))
-end) ,case 
+end) ,case
 when isnull(@settleTimeEnd,'') <> ''
 then DATEADD(day,1,@settleTimeEnd)
 else
@@ -158,13 +158,13 @@ and a.cyksbm like '%%') as ab
 select * into #temp3 from (select '去年同期' 期,
 count(0) 出院人次,
 count(
-case 
+case
 when c.profitloss>=0
 then 1
 end
 ) 预计盈利人次,
 count(
-case 
+case
 when c.profitloss<0
 then 1
 end
@@ -200,13 +200,13 @@ convert(decimal(18,2),sum(a.medical_fee)/nullif(sum(totalcost)*100,0)) 医务性
 from t_setlinfo a
 left join t_drg_result_relation b on a.mdtrt_sn=b.uid
 left join t_drg_result c on b.drgresult_id=c.id
-where 
-brjsrq>=DATEADD(yy,-1,case 
+where
+brjsrq>=DATEADD(yy,-1,case
 when isnull(@settleTimeStart,'') <> ''
 then @settleTimeStart
 else
 dateadd(month,datediff(month,0,getdate()-1)-1,0)
-end) and brjsrq<DATEADD(yy,-1,case 
+end) and brjsrq<DATEADD(yy,-1,case
 when isnull(@settleTimeEnd,'') <> ''
 then DATEADD(day,1,@settleTimeEnd)
 else
@@ -222,7 +222,7 @@ union all
 select * from #temp3
 union all
 
-select 
+select
 '环比' 期,
 isnull(convert(decimal(18,2),(aa.出院人次-ab.出院人次)/nullif(convert(decimal(18,2),ab.出院人次),0)*100),0) 出院人次,
 isnull(convert(decimal(18,2),(aa.预计盈利人次-ab.预计盈利人次)/nullif(convert(decimal(18,2),ab.预计盈利人次),0)*100),0) 预计盈利人次,
@@ -257,7 +257,7 @@ isnull(convert(decimal(18,2),(aa.平均医务性收入-ab.平均医务性收入)
 isnull(convert(decimal(18,2),(aa.医务性收入占比-ab.医务性收入占比)/nullif(convert(decimal(18,2),ab.医务性收入占比),0)*100),0) 医务性收入占比
 from #temp1 as aa ,#temp2 as ab
 union all
-select 
+select
 '同比' 期,
 isnull(convert(decimal(18,2),(aa.出院人次-ab.出院人次)/nullif(convert(decimal(18,2),ab.出院人次),0)*100),0) 出院人次,
 isnull(convert(decimal(18,2),(aa.预计盈利人次-ab.预计盈利人次)/nullif(convert(decimal(18,2),ab.预计盈利人次),0)*100),0) 预计盈利人次,

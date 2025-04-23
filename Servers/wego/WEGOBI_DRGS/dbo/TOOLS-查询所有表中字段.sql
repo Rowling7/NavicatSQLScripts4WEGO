@@ -1,5 +1,5 @@
 DECLARE @COLUMNS NVARCHAR(50);
-SET @COLUMNS ='%'+'CONER_ADDR'+'%';
+SET @COLUMNS ='%'+'anst_mtd_code'+'%';
 
 SELECT
     TABLE_SCHEMA AS [SCHEMA],

@@ -7,3 +7,15 @@ select mdtrt_sn,diag_type,diag_code,diag_name,adm_cond_type
 from t_setlinfo_diseinfo
 where diag_code+diag_name not in
 	(select distinct trim(insur_code)+trim(insur_name)  from  t_diagnosis_code)
+
+
+SELECT
+	diagnosis_code 诊断编码国临版,
+	diagnosis_name 诊断名称国临版,
+	insur_code 诊断编码医保版,
+	insur_name 诊断名称医保版 
+FROM
+	t_diagnosis_code
+where 
+	insur_code like '%k58.800%' 
+

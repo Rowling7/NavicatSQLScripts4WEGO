@@ -1,6 +1,6 @@
 declare @settleTimeStart datetime,@settleTimeEnd datetime;
-set @settleTimeStart ='2024-01-01';
-set @settleTimeEnd ='2024-12-31';
+set @settleTimeStart ='2025-01-01';
+set @settleTimeEnd ='2025-12-31';
 
 WITH LstTotalRW AS (
     SELECT rw, COUNT(0) AS cnt

@@ -65,4 +65,5 @@ a.id=b.drgresult_id and a.jzlsh=c.mdtrt_sn and c.isdrg=1
 					ELSE YEAR(GETDATE())
 			END
 		--查询时间范围>
-GROUP BY year(A.settletime)
+GROUP BY year(A.settletime) 
+ORDER BY year(A.settletime) desc

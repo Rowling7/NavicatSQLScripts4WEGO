@@ -52,3 +52,4 @@ GROUP BY YEAR(si.brjsrq )
 select lastCost.brjsrqYear 年份,lastCost.lastTotalcostPerRW 当期每权重次均住院费用,pastCost.pastTotalcostPerRW 上期每权重次均住院费用,concat(convert(DECIMAL(18,2),((lastCost.lastTotalcostPerRW/pastCost.pastTotalcostPerRW)-1)*100),'%') 每权重住院费用增长率
 from lastCost 
 left join pastCost on pastCost.brjsrqYear=CAST(CAST(REPLACE(lastCost.brjsrqYear, '%', '') AS INT) - 1 AS VARCHAR(4)) 
+ORDER BY lastCost.brjsrqYear desc

@@ -1,0 +1,12 @@
+SELECT CONCAT('查询时间：', TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MI:SS')) AS 查询时间
+     , MDTRT_SN AS 就医流水号
+     , BRJSRQ AS 病人结算时间
+     , NULLIF('NULL',GD_TIME) AS 归档时间
+     , GD_STATUS AS 归档状态
+     , BILL_CODE AS 票据代码
+     , BILL_NO AS 票据号码
+     , MEDINS_FILL_DEPT AS 医药机构填报部门
+     , MEDINS_FILL_PSN AS 医药机构填报人
+FROM HIP.V_SETLINFO
+WHERE TO_CHAR(BRJSRQ, 'YYYY-MM-DD') BETWEEN '2025-01-01' AND '2025-04-31'
+      AND MDTRT_SN = '2023431602-1-001';

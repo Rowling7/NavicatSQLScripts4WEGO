@@ -1,0 +1,14 @@
+*.db
+*.db-shm
+*.db-wal
+*.nb3
+*.tmp
+*.exe
+*.log
+Premium/
+PostgreSQL/
+**/profiles/
+*.ndsymssql
+*.nbakmysql
+*.db-shm
+*.db-wal

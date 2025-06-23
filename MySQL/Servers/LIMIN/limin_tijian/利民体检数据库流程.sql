@@ -112,6 +112,14 @@ limit 100;
 
 
 ---------------------------------------------
+-- 查询订单下的大项目
+SELECT tgo.id, tgo.order_name, tog.name as group_name, togi.name as project_name
+from t_group_order_f594102095fd9263b9ee22803eb3f4e5 tgo
+left JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 tog on tgo.id = tog.group_order_id and tog.del_flag = '0'
+left join t_order_group_item_f594102095fd9263b9ee22803eb3f4e5 togi on tog.id = togi.group_id and togi.del_flag = '0'
+where tgo.order_code = '202506160004'
+  and tgo.del_flag = '0'
+limit 100;
 
 -- 查询该分组下的大项目（组合项目）
 SELECT ogi.*

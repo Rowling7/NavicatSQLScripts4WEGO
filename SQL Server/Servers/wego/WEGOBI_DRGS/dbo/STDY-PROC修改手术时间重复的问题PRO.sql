@@ -21,12 +21,27 @@ GO
 CREATE PROCEDURE updateOprtDate
 AS
 BEGIN
+    -- 检查全局临时表是否存在，不存在则创建
+    IF OBJECT_ID('tempdb..##OprtDateUpdateHistory') IS NULL
+    BEGIN
+        CREATE TABLE ##OprtDateUpdateHistory (
+            execution_time DATETIME,
+            id VARCHAR(50),
+            mdtrt_sn VARCHAR(50),
+            oprn_oprt_code VARCHAR(50),
+            old_oprt_date DATETIME,
+            new_oprt_date DATETIME,
+            revise_status NVARCHAR(100),
+            result_message NVARCHAR(200)
+        );
+    END
+
     DECLARE @reviseCount INT;
     DECLARE @message NVARCHAR(100);
     DECLARE @rowsAffected INT;
     DECLARE @resultMessage NVARCHAR(200);
     DECLARE @executionTime DATETIME = GETDATE();
-    
+
     -- 修改临时表定义，增加id字段
     DECLARE @tempTable TABLE (
         id VARCHAR(50),
@@ -133,7 +148,7 @@ BEGIN
 
     -- 将本次执行结果存入全局临时表
     INSERT INTO ##OprtDateUpdateHistory (
-        execution_time, id, mdtrt_sn, oprn_oprt_code, 
+        execution_time, id, mdtrt_sn, oprn_oprt_code,
         old_oprt_date, new_oprt_date, revise_status, result_message
     )
     SELECT DISTINCT
@@ -152,7 +167,7 @@ BEGIN
     LEFT JOIN t_setlinfo_revise r ON ul.mdtrt_sn = r.mdtrt_sn;
 
     -- 输出所有历史记录
-    SELECT 
+    SELECT
         execution_time AS '执行时间',
         id AS 'ID',
         mdtrt_sn AS '就诊流水号',
@@ -166,6 +181,5 @@ BEGIN
 
     PRINT @resultMessage;
 END;
-
 
 exec updateOprtDate;

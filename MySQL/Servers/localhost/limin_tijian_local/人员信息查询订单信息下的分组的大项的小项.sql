@@ -36,8 +36,8 @@ JOIN
 		ON ogip.t_order_group_item_id=ogi.id AND ogip.del_flag<>'1'
 WHERE
 		gp.del_flag<>'1'
-    AND gp.person_name='曹勇嵩'
-		AND gp.id_card='371083199808117516'
+    AND gp.person_name='田晓明'
+		AND gp.id_card='824299195501309857'
 		AND go.order_name='互联科技2025-07'
 ORDER BY
     og.name, gp.person_name;

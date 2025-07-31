@@ -20,8 +20,8 @@ JOIN
     ON og.group_order_id = go.id and go.del_flag<>'1'
 WHERE
 		gp.del_flag<>'1'
-    AND gp.person_name='曹勇嵩'
-		and gp.id_card='371083199808117516'
+    AND gp.person_name='田晓明'
+		and gp.id_card='824299195501309857'
 ORDER BY
     og.name, gp.person_name;
 

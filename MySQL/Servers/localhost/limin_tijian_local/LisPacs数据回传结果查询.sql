@@ -1,5 +1,5 @@
-SELECT distinct pb.id AS 'personId',
-                pb.person_name AS '人员姓名',
+SELECT distinct gp.id AS 'personId',
+                gp.person_name AS '人员姓名',
                 pd.create_time AS '申请时间',
                 dr.order_application_id'申请单ID',
                 dr.group_item_name AS '分组项目名称',
@@ -15,9 +15,9 @@ SELECT distinct pb.id AS 'personId',
                 pd.obr_project_code_name AS 'pacs报告单名称',
                 pd.report_time AS 'pacs报告时间'
 
-from t_group_person_f594102095fd9263b9ee22803eb3f4e5 pb
-left join t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr on dr.person_id=pb.id
+from t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
+left join t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr on dr.person_id=gp.id
 left join t_lis_data_f594102095fd9263b9ee22803eb3f4e5 ld on ld.order_application_id=  dr.order_application_id
 left join t_pacs_data_f594102095fd9263b9ee22803eb3f4e5 pd on pd.order_application_id=dr.order_application_id
-WHERE  pb.person_name like  '%王%'
-order by ld.check_report_time,pd.report_time desc
+WHERE  gp.person_name like  '%王%'
+order by gp.person_name,pd.create_time,ld.check_report_time,pd.report_time desc

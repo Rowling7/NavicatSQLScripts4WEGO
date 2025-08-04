@@ -19,5 +19,5 @@ from t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
 left join t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr on dr.person_id=gp.id
 left join t_lis_data_f594102095fd9263b9ee22803eb3f4e5 ld on ld.order_application_id=  dr.order_application_id
 left join t_pacs_data_f594102095fd9263b9ee22803eb3f4e5 pd on pd.order_application_id=dr.order_application_id
-WHERE  gp.person_name like  '%王%'
+WHERE  gp.person_name like  '%兰%'
 order by gp.person_name,pd.create_time,ld.check_report_time,pd.report_time desc

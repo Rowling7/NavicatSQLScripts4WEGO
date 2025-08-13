@@ -10,7 +10,8 @@ FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
      LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON og.id = gp.group_id
      LEFT JOIN t_order_group_item_f594102095fd9263b9ee22803eb3f4e5 ogi ON og.id = ogi.group_id
      LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON dr.group_item_id = ogi.id
-WHERE gp.person_name = '花荣'
+WHERE gp.person_name = '刘书村'
+  -- AND GP.test_num = ''
   AND gp.del_flag <> 1
   AND og.del_flag <> 1
   AND dr.del_flag <> 1;
@@ -29,7 +30,8 @@ FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
      LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON og.id = gp.group_id
      LEFT JOIN t_order_group_item_f594102095fd9263b9ee22803eb3f4e5 ogi ON og.id = ogi.group_id
      LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON dir.order_group_item_id = ogi.id
-WHERE gp.person_name = '花荣'
+WHERE gp.person_name = '兰程'
+  -- AND GP.test_num = ''
   AND dir.del_flag <> 1
   AND gp.del_flag <> 1
   AND og.del_flag <> 1;
@@ -52,12 +54,12 @@ SELECT DISTINCT
        pd.obr_project_code_name AS 'pacs报告单名称',
        pd.report_time AS 'pacs报告时间',
        pd.check_result AS 'pacs项目结果'
-
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
      LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON dr.person_id = gp.id
      LEFT JOIN t_lis_data_f594102095fd9263b9ee22803eb3f4e5 ld ON ld.order_application_id = dr.order_application_id
      LEFT JOIN t_pacs_data_f594102095fd9263b9ee22803eb3f4e5 pd ON pd.order_application_id = dr.order_application_id
-WHERE gp.person_name LIKE '%花荣%'
+WHERE gp.person_name LIKE '%刘书村%'
+  -- AND GP.test_num = ''
   AND gp.del_flag <> 1
   AND dr.del_flag <> 1
   AND pd.del_flag <> 1

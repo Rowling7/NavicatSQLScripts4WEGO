@@ -1,6 +1,6 @@
 -- 组合项目结果
 SELECT DISTINCT
-       gp.test_num AS '申请单号',
+       gp.test_num AS '体检编号',
        gp.person_name AS '人员姓名',
        gp.patient_id AS 'HIS编号',
        og.name AS '分组名称',
@@ -19,22 +19,27 @@ WHERE gp.person_name = '刘书村'
 
 -- 组合项目的小项结果
 SELECT DISTINCT
-       gp.test_num AS '申请单号',
+       gp.test_num AS '体检编号',
        gp.person_name AS '人员姓名',
        gp.patient_id AS 'HIS编号',
        og.name AS '分组名称',
        ogi.name AS '分组项目',
+			 dir.order_application_id AS '申请单号',
+			 dir.create_date AS '申请时间',
+       dir.update_date AS '检查时间',
        dir.order_group_item_project_name AS '小项名称',
        dir.result AS '项目结果'
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
      LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON og.id = gp.group_id
      LEFT JOIN t_order_group_item_f594102095fd9263b9ee22803eb3f4e5 ogi ON og.id = ogi.group_id
      LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON dir.order_group_item_id = ogi.id
-WHERE gp.person_name = '兰程'
+WHERE gp.person_name = '王艺安'
   -- AND GP.test_num = ''
+	AND DATE_FORMAT(dir.create_date, '%Y-%m-%d') like '%2025-08-18%'
   AND dir.del_flag <> 1
   AND gp.del_flag <> 1
-  AND og.del_flag <> 1;
+  AND og.del_flag <> 1
+ORDER BY DATE_FORMAT(dir.create_date, '%Y-%m-%d') desc,项目结果 desc,检查时间 desc;
 
 -- LIS、PACS 结果
 SELECT DISTINCT

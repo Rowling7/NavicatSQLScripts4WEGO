@@ -20,6 +20,6 @@ JOIN
     ON og.group_order_id = go.id AND go.del_flag <> '1'
 WHERE 
     ogi.del_flag <> '1'
-    AND go.order_name = '测试20250704-C1'
+    AND go.order_name = '恒德技工技术学院2025'
 ORDER BY 
     og.name,ogi.order_num,ogi.name;

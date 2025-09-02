@@ -1,8 +1,13 @@
 SELECT gp.dept 团检单位,
        go.order_name AS 订单名称,
-       SUBSTRING(og.name, 1, LOCATE('-', og.name) - 1) AS 学院,
-       SUBSTRING(og.name, LOCATE('-', og.name) + 1) AS 专业,
+       -- SUBSTRING(og.name, 1, LOCATE('-', og.name) - 1) AS 学院,
+       SUBSTRING(og.name, LOCATE('-', og.name) + 1) AS 科室,
        gp.person_name AS 姓名,
+       gp.sex AS 性别,
+       gp.age AS 年龄,
+       gp.birth AS 出生日期,
+       gp.id_card AS 身份证号码,
+       gp.mobile AS 手机号码,
        gp.test_num AS 体检号,
        gp.patient_id AS HIS号
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
@@ -13,7 +18,4 @@ FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
 WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
-  AND go.order_name = '恒德技工技术学院2025'
-ORDER BY 学院
-       , 专业
-       , gp.person_name;
+  AND go.order_name = '文登北洋幸星电子2025'

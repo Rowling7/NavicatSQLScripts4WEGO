@@ -60,15 +60,20 @@ SELECT DISTINCT
        pd.report_time AS 'pacs报告时间',
        pd.check_result AS 'pacs项目结果'
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
+     LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id
+     LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
      LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON dr.person_id = gp.id
      LEFT JOIN t_lis_data_f594102095fd9263b9ee22803eb3f4e5 ld ON ld.order_application_id = dr.order_application_id
      LEFT JOIN t_pacs_data_f594102095fd9263b9ee22803eb3f4e5 pd ON pd.order_application_id = dr.order_application_id
-WHERE gp.person_name LIKE '%刘书村%'
+WHERE gp.person_name LIKE '%徐礼帅%'
   -- AND GP.test_num = ''
+  -- AND pd.report_time <'2025-09-03 08:05:23'  
+  AND go.order_name = '文登北洋幸星电子2025'
+  -- AND dr.group_item_name like '%腹部彩超%'
   AND gp.del_flag <> 1
-  AND dr.del_flag <> 1
-  AND pd.del_flag <> 1
-  AND ld.del_flag <> 1
+  -- AND dr.del_flag <> 1
+  -- AND pd.del_flag <> 1
+  -- AND ld.del_flag <> 1
 ORDER BY gp.person_name
        , pd.create_time
        , ld.check_report_time

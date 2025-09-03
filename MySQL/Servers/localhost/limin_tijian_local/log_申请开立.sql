@@ -1,9 +1,10 @@
-SELECT id,
+SELECT DISTINCT 
+id,
        create_time AS 创建时间,
        update_time AS 更新时间,
        name AS 名称,
        request_param AS 请求参数,
-       SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|||', 1) AS pNumber,
+       case when name ='PacsReceiveHL7Message' then NULL else SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|||', 1) end  AS pNumber,
        SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 1), '|||', -1) AS pName,
        response_param AS 响应参数
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5
@@ -26,3 +27,6 @@ WHERE log_type = 2
       AND go.order_name = '文登北洋幸星电子2025'
 )
 ORDER BY pName;
+
+
+

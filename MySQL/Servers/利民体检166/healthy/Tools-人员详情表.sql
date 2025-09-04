@@ -18,4 +18,4 @@ FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
 WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
-  AND go.order_name = '文登北洋幸星电子2025'
+  AND go.order_name = '哈工大研究生25级'

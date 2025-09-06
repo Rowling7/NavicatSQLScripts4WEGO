@@ -5,7 +5,7 @@ SELECT id,
        request_param AS 请求参数,
        SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|||', 1) AS pNumber,
        SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 1), '|||', -1) AS pName,
-			 left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1||', 1),'|', -1),18) as pIDCARD,
+			 left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1|0|', 1),'|', -1),18) as pIDCARD,
        SUBSTRING_INDEX(CASE
            WHEN request_param LIKE '%PHYS%' AND request_param LIKE '%ORC|NW|%' THEN concat(SUBSTRING_INDEX(
                    SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '|||||||', 1),'-','NW')
@@ -23,9 +23,10 @@ SELECT id,
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5
 WHERE log_type = 2
   AND del_flag = 0
-  AND name ='PacsReceiveHL7Message'
+   -- AND name ='PacsReceiveHL7Message'
+	 AND name ='LisReceiveHL7Message'
 	-- and SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 1), '|||', -1) in('吕婉莹	
-	AND left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1||', 1),'|', -1),18) IN (
+	  AND left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1|0|', 1),'|', -1),18) IN (
     SELECT gp.id_card AS idCard
     FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
          JOIN

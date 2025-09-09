@@ -12,7 +12,8 @@ SELECT dr.order_application_id AS param,
     WHERE gp.del_flag <> '1'
       AND og.del_flag <> '1'
       AND go.del_flag <> '1'
-      AND go.order_name = '恒德技工技术学院2025'
+			AND go.order_code='202508310001'
+      -- AND go.order_name = '恒德技工技术学院2025'
 )
 
 SELECT distinct DENSE_RANK() OVER (ORDER BY mid(SUBSTRING_INDEX(request_param, 'PID|', -1),2,10) ASC) AS 序号,

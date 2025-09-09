@@ -11,8 +11,9 @@ SELECT dr.order_application_id AS param,
     WHERE gp.del_flag <> '1'
       AND og.del_flag <> '1'
       AND go.del_flag <> '1'
+			AND go.order_code='202508310001'
 			-- AND gp.person_name =''
-      AND go.order_name = '威海市明德职业中等专业学校2025'
+			-- AND go.order_name = '威海市明德职业中等专业学校2025'
 )
 
 SELECT  DISTINCT DENSE_RANK() OVER (ORDER BY mid(SUBSTRING_INDEX(request_param, 'PID|', -1),3,10) ASC) AS 序号,

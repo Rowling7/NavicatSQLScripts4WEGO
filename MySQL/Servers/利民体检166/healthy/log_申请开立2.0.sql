@@ -1,5 +1,5 @@
 -- 申请开立|心电图室-0401 影像科-0402 彩超室-0403 内镜中心-0120
-SELECT DENSE_RANK() OVER (ORDER BY SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|||', 1) ASC) AS 序号,
+SELECT distinct DENSE_RANK() OVER (ORDER BY SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|||', 1) ASC) AS 序号,
 id AS ID,
 			 STR_TO_DATE(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '||', 3), '||', -1), '%Y%m%d%H%i%s')  AS 申请时间,
        name AS 名称,

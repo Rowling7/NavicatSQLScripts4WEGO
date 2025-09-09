@@ -12,8 +12,8 @@ SELECT dr.order_application_id AS param,
     WHERE gp.del_flag <> '1'
       AND og.del_flag <> '1'
       AND go.del_flag <> '1'
-			-- AND gp.person_name =''
-      AND go.order_name = '威海市明德职业中等专业学校2025'
+			AND go.order_code='202508310001'
+			-- AND go.order_name = '威海市明德职业中等专业学校2025'
 )
 
 SELECT distinct DENSE_RANK() OVER (ORDER BY SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|', 1) ASC) AS 序号,
@@ -31,6 +31,6 @@ FROM t_log_f594102095fd9263b9ee22803eb3f4e5
 left join (select testNum,patientId,idCard from LISHL7)a on t_log_f594102095fd9263b9ee22803eb3f4e5.patient_id=a.patientId
 WHERE log_type = 2
   AND del_flag = 0
-  AND request_param like '%ECG||RIS%'
+  AND name = 'LisReceiveHL7Message'
   AND SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SN|', -1), '|||||||', 1) IN (SELECT param FROM LISHL7)
 order by 序号,姓名,项目名称;

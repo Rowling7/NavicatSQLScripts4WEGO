@@ -11,7 +11,8 @@ FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
 WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
-  AND go.order_name = '威海市明德职业中等专业学校2025'
+  -- AND go.order_name = '恒德技工技术学院2025'
+	AND go.order_code='202508280001'
 group by go.order_name,SUBSTRING(og.name, 1, LOCATE('-', og.name) - 1),SUBSTRING(og.name, LOCATE('-', og.name) + 1) with rollup
 having grouping(学院)=grouping(专业)and go.order_name is not null
 order by 人数

@@ -23,7 +23,7 @@ SELECT id,
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5
 WHERE log_type = 2
   AND del_flag = 0
-  AND name ='PacsReceiveHL7Message'
+  -- AND name ='PacsReceiveHL7Message'
 	-- and SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 1), '|||', -1) in('吕婉莹	
 	AND left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1||', 1),'|', -1),18) IN (
     SELECT gp.id_card AS idCard
@@ -35,7 +35,7 @@ WHERE log_type = 2
     WHERE gp.del_flag <> '1'
       AND og.del_flag <> '1'
       AND go.del_flag <> '1'
-      AND go.order_name = '哈工大新生25级'
+      AND go.order_name = '威海市明德职业中等专业学校2025'
 )
 ORDER BY pName;
 

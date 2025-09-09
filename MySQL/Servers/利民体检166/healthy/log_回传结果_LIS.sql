@@ -1,44 +1,36 @@
--- healthy_result_update_list
 -- LIS
-SELECT DISTINCT A.pTestNum AS NUM,A.pName
-FROM (
-SELECT id AS PID,
-       create_time AS 创建时间,
-       update_time AS 更新时间,
-       name AS 名称,
-       request_param AS 请求参数,
-       SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|||', 1) AS pNumber,
-       SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 1), '||', -1) AS pName,
-			 left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1|0|', 1),'|', -1),18) as pIDCARD,
-			 left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SN|', 1),'|', -1),15) as pTestNum,
-       SUBSTRING_INDEX(CASE
-           WHEN request_param LIKE '%PHYS%' AND request_param LIKE '%ORC|NW|%' THEN concat(SUBSTRING_INDEX(
-                   SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '|||||||', 1),'-','NW')
-           WHEN request_param LIKE '%PHYS%' AND request_param LIKE '%ORC|CA|%' THEN concat(SUBSTRING_INDEX(
-                   SUBSTRING_INDEX(request_param, 'ORC|CA|', -1), '|||||||', 1),'-','CA')
-           WHEN request_param LIKE '%ECG%'                                     THEN concat(SUBSTRING_INDEX(
-                   SUBSTRING_INDEX(request_param, 'ORC|SC|', -1), '|||F||||', 1),'-','SC')
-           WHEN request_param LIKE '%PACS%'                                    THEN concat(SUBSTRING_INDEX(
-                   SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '|||||||', 1),'-','NW')
-           WHEN request_param LIKE '%LIS%'                                     THEN concat(SUBSTRING_INDEX(
-                   SUBSTRING_INDEX(request_param, 'ORC|SN|', -1), '|||||||', 1),'-','SN')
-           ELSE NULL
-           END,'^^',-1) AS 申请单号,
-       response_param AS 响应参数
-FROM t_log_f594102095fd9263b9ee22803eb3f4e5
-WHERE log_type = 2
-  AND del_flag = 0
---  AND name ='LisReceiveHL7Message'
-AND left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SN|', 1),'|', -1),15) IN (
-    SELECT gp.test_num AS testNum
+WITH LISHL7 AS (
+SELECT dr.order_application_id AS param,
+			 gp.person_name AS pName,
+			 gp.test_num as testNum,
+			 gp.patient_id as patientId,
+			 gp.id_card as idCard
     FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
-         JOIN
-         t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id
-         JOIN
-         t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
+    JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id
+    JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
+		LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON dr.person_id = gp.id
     WHERE gp.del_flag <> '1'
       AND og.del_flag <> '1'
       AND go.del_flag <> '1'
-      AND go.order_name = '哈工大新生25级'
+			-- AND gp.person_name =''
+      AND go.order_name = '威海市明德职业中等专业学校2025'
 )
-)A;
+
+SELECT distinct DENSE_RANK() OVER (ORDER BY SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|', 1) ASC) AS 序号,
+			 -- id AS ID,
+       name AS 名称,
+			 STR_TO_DATE(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '||', 3), '||', -1), '%Y%m%d%H%i%s')  AS 回传时间,
+       SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|', 1) AS HIS号,
+			 SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 2), '|', -1) AS 姓名,
+			 left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SN|', 1),'|', -1),15) as 体检编号,
+			 a.idCard AS 身份证号,
+       concat(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SN|', -1), '|||||||', 1),'-','SN') AS 申请单号,
+			 SUBSTRING_INDEX( SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'OBR|', -1),'|||',1),'^',-1)AS 项目名称,
+			 request_param AS 请求参数
+FROM t_log_f594102095fd9263b9ee22803eb3f4e5
+left join (select testNum,patientId,idCard from LISHL7)a on t_log_f594102095fd9263b9ee22803eb3f4e5.patient_id=a.patientId
+WHERE log_type = 2
+  AND del_flag = 0
+  AND request_param like '%ECG||RIS%'
+  AND SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SN|', -1), '|||||||', 1) IN (SELECT param FROM LISHL7)
+order by 序号,姓名,项目名称;

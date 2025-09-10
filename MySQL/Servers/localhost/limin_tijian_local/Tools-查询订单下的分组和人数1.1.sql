@@ -1,13 +1,10 @@
-SELECT 
-       go.order_name AS 订单名称,
+SELECT go.order_name AS 订单名称,
        SUBSTRING(og.name, 1, LOCATE('-', og.name) - 1) AS 学院,
 			 SUBSTRING(og.name, LOCATE('-', og.name) + 1) AS 专业,
        count(SUBSTRING(og.name, LOCATE('-', og.name) + 1)) 人数
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
-     JOIN
-     t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id
-     JOIN
-     t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
+LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id
+LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
 WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'

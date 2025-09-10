@@ -1,21 +1,32 @@
-SELECT DISTINCT 
-id,
+SELECT id,
        create_time AS 创建时间,
        update_time AS 更新时间,
        name AS 名称,
        request_param AS 请求参数,
-       case when name ='PacsReceiveHL7Message' then NULL else SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|||', 1) end  AS pNumber,
+       SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PID||', -1), '|||', 1) AS pNumber,
        SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 1), '|||', -1) AS pName,
+			 left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1||', 1),'|', -1),18) as pIDCARD,
+       SUBSTRING_INDEX(CASE
+           WHEN request_param LIKE '%PHYS%' AND request_param LIKE '%ORC|NW|%' THEN concat(SUBSTRING_INDEX(
+                   SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '|||||||', 1),'-','NW')
+           WHEN request_param LIKE '%PHYS%' AND request_param LIKE '%ORC|CA|%' THEN concat(SUBSTRING_INDEX(
+                   SUBSTRING_INDEX(request_param, 'ORC|CA|', -1), '|||||||', 1),'-','CA')
+           WHEN request_param LIKE '%ECG%'                                     THEN concat(SUBSTRING_INDEX(
+                   SUBSTRING_INDEX(request_param, 'ORC|SC|', -1), '|||F||||', 1),'-','SC')
+           WHEN request_param LIKE '%PACS%'                                    THEN concat(SUBSTRING_INDEX(
+                   SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '|||||||', 1),'-','NW')
+           WHEN request_param LIKE '%LIS%'                                     THEN concat(SUBSTRING_INDEX(
+                   SUBSTRING_INDEX(request_param, 'ORC|SN|', -1), '|||||||', 1),'-','SN')
+           ELSE NULL
+           END,'^^',-1) AS 申请单号,
        response_param AS 响应参数
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5
 WHERE log_type = 2
-  -- AND request_param LIKE '%腹部彩超%'
-  -- AND request_param LIKE '%%'
   AND del_flag = 0
-  AND (name ='检查开立'or name ='PacsReceiveHL7Message')
-	
-  AND SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 1), '|||', -1) IN (
-    SELECT gp.person_name AS personName
+  -- AND name ='PacsReceiveHL7Message'
+	-- and SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, '^^^', 1), '|||', -1) in('吕婉莹	
+	AND left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1||', 1),'|', -1),18) IN (
+    SELECT gp.id_card AS idCard
     FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
          JOIN
          t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id
@@ -24,9 +35,8 @@ WHERE log_type = 2
     WHERE gp.del_flag <> '1'
       AND og.del_flag <> '1'
       AND go.del_flag <> '1'
-      AND go.order_name = '文登北洋幸星电子2025'
+      AND go.order_name = '威海市明德职业中等专业学校2025'
 )
 ORDER BY pName;
-
 
 

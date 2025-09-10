@@ -20,11 +20,18 @@ WHERE log_type = 2
 	AND del_flag = 0
 	AND name ='检查开立'
 	AND LEFT(substring_index(substring_index(substring_index(request_param,'D|||',-1),'OBR|',1),'^^',-1),4) = '0402'
-	AND left(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'PV1||', 1),'|', -1),18) IN (
-			SELECT gp.id_card AS idCard
+	AND SUBSTRING_INDEX(CASE
+           WHEN  request_param LIKE '%ORC|NW|%' 
+							THEN concat(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '|||||||', 1),'-','NW')
+           WHEN request_param LIKE '%ORC|CA|%'
+							THEN concat(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|CA|', -1), '|||||||', 1),'-','CA')
+           ELSE NULL
+           END,'^^',-1) IN (
+			SELECT dr.order_application_id AS param
 			FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
-			JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5  og ON gp.group_id = og.id
-			JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5  go ON og.group_order_id = go.id
+			LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5  og ON gp.group_id = og.id
+			LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5  go ON og.group_order_id = go.id
+			LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON dr.person_id = gp.id
 			WHERE gp.del_flag <> '1'
 				AND og.del_flag <> '1'
 				AND go.del_flag <> '1'

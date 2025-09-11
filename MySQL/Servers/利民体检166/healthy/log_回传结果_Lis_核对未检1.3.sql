@@ -38,7 +38,7 @@ WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dr.del_flag <> '1'
-  AND go.order_code = '202509100002'
+  AND go.order_code = '202508280001'
   AND dr.office_id IN ('90405')
   AND dr.order_application_id NOT IN (SELECT OrderIdLog FROM t_LisHL7Log)
   AND dr.group_item_name <> 'γ干扰素释放试验';

@@ -1,5 +1,6 @@
 -- LIS
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
+set @orderCode ='202508310001';
 DROP TEMPORARY TABLE IF EXISTS t_LisHL7Log;
 CREATE TEMPORARY TABLE t_LisHL7Log
 (
@@ -38,11 +39,27 @@ WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dr.del_flag <> '1'
-  AND go.order_code = '202508280001'
+  AND go.order_code = @orderCode
   AND dr.office_id IN ('90405')
   AND dr.order_application_id NOT IN (SELECT OrderIdLog FROM t_LisHL7Log)
   AND dr.group_item_name <> 'γ干扰素释放试验';
 SELECT * FROM t_OrderIdDRLis ORDER BY 序号,分组名称;;
+
+
+
+SELECT dir.order_application_id AS 申请单号
+FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
+    LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON dr.id = dir.depart_result_id
+    LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON dr.person_id = gp.id
+    LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON og.id = gp.group_id
+    LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
+WHERE dir.office_id IN ('90405')
+  AND go.order_code = @orderCode
+GROUP BY
+    dir.order_application_id,
+    dir.office_id
+HAVING SUM(ISNULL(result)) = COUNT(1)
+
 
 -- 2. result表没有结果
 SELECT DISTINCT
@@ -74,9 +91,12 @@ FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
     LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
 WHERE dr.del_flag <> '1'
   AND dir.del_flag <> '1'
-  AND dir.order_application_id IN (SELECT 申请单号 FROM t_OrderIdDRLis)
-  AND ISNULL(dir.result) <> 0
-ORDER BY 序号,分组名称;;
+  AND dir.order_application_id IN (SELECT order_application_id
+																		FROM t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5
+																		where office_id IN ('90405')
+																		group by order_application_id,office_id
+																		having sum(isnuLL(result))=count(1))
+ORDER BY 序号,分组名称;
 
 /*
 -- 3.核对详细数据部分
@@ -138,6 +158,9 @@ FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
     LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
 WHERE dr.del_flag <> '1'
   AND dir.del_flag <> '1'
-  AND dir.order_application_id IN (SELECT 申请单号 FROM t_OrderIdDRLis)
-  AND ISNULL(dir.result) <> 0
-ORDER BY 序号,分组名称;;
+  AND dir.order_application_id IN  (SELECT order_application_id
+																			FROM t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5
+																			where order_application_id in (SELECT 申请单号 FROM t_OrderIdDRLis)
+																			group by order_application_id,office_id
+																			having sum(isnuLL(result))=count(1))
+ORDER BY 序号,分组名称;

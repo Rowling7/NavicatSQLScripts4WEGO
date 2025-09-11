@@ -4,11 +4,12 @@ CREATE TEMPORARY TABLE t_OrderIdHL7Log (
     INDEX idx_OrderIdLog (OrderIdLog)
 ) AS
 SELECT DISTINCT
-       SUBSTRING_INDEX(CASE WHEN request_param LIKE '%ORC|NW|%' THEN
-                                SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '|||||||', 1)
-                            WHEN request_param LIKE '%ORC|CA|%' THEN
-                                SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|CA|', -1), '|||||||', 1)
-                            ELSE NULL END, '^^', -1) AS OrderIdLog
+       SUBSTRING_INDEX(SUBSTRING_INDEX(
+					CASE WHEN request_param LIKE '%ORC|NW|%' THEN SUBSTRING_INDEX(request_param, 'ORC|NW|', -1)
+							 WHEN request_param LIKE '%ORC|CA|%' THEN SUBSTRING_INDEX(request_param, 'ORC|CA|', -1)
+							 ELSE NULL 
+					END
+				, '|||||||', 1), '^^', -1) AS OrderIdLog
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5
 WHERE log_type = 2
   AND del_flag = 0

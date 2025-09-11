@@ -1,16 +1,15 @@
 DROP TEMPORARY TABLE IF EXISTS t_OrderIdHL7Log;
 CREATE TEMPORARY TABLE t_OrderIdHL7Log
-(
-    OrderIdLog VARCHAR(255) ,
+(		OrderIdLog VARCHAR(40) ,
     INDEX idx_OrderIdLog (OrderIdLog)
 ) AS
 SELECT DISTINCT
-       SUBSTRING_INDEX(CASE WHEN request_param LIKE '%ORC|NW|%' THEN
-                                SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '|||||||', 1)
-                            WHEN request_param LIKE '%ORC|CA|%' THEN
-                                SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|CA|', -1), '|||||||', 1)
-                            ELSE NULL
-                       END, '^^', -1) AS OrderIdLog
+       SUBSTRING_INDEX(SUBSTRING_INDEX(
+					CASE WHEN request_param LIKE '%ORC|NW|%' THEN SUBSTRING_INDEX(request_param, 'ORC|NW|', -1)
+							 WHEN request_param LIKE '%ORC|CA|%' THEN SUBSTRING_INDEX(request_param, 'ORC|CA|', -1)
+							 ELSE NULL 
+					END
+				, '|||||||', 1), '^^', -1) AS OrderIdLog
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5
 WHERE log_type = 2
   AND del_flag = 0
@@ -31,10 +30,9 @@ SELECT DISTINCT
             WHEN gp.is_pass = 3 THEN '总检'
             ELSE '已完成'
        END AS 体检状态,
-       CASE WHEN gp.fee_status = 0 THEN '未缴费'
-						WHEN gp.fee_status = 1 THEN '已缴费'
-						WHEN gp.fee_status = 2 THEN '已退费'
-            ELSE gp.fee_status
+       CASE WHEN gp.fee_status = 2 THEN '已退费'
+						when gp.fee_status = -99 THEN '退费中'
+            ELSE NULL
        END AS 收费状态
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
     LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id
@@ -44,6 +42,6 @@ WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dr.del_flag <> '1'
-  AND go.order_code = '202508280001'
+  AND go.order_code = '202509100002'
   AND dr.office_id IN ('90401' , '90402' , '90403' , '90404' , '90120')
   AND dr.order_application_id NOT IN (SELECT OrderIdLog FROM t_OrderIdHL7Log)

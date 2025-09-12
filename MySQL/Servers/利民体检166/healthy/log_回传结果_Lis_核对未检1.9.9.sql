@@ -1,16 +1,55 @@
--- Pacs
--- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
-SET @orderCode = '202509100002';
+/*
+脚本功能说明：
+该脚本用于查询LIS（实验室信息系统）中检验科未返回结果的申请单信息，主要用于排查检验结果缺失的问题。
+
+脚本执行步骤详解：
+
+第一步：创建临时表 t_LisHL7Log
+作用：从日志表中提取LIS HL7消息处理记录，识别解析失败的报文
+逻辑：
+1. 从 `t_log_f594102095fd9263b9ee22803eb3f4e5` 表中筛选HL7消息日志
+2. 提取申请单号：从 `request_param` 字段中解析出以'ORC|SN|'开头的申请单号
+3. 识别错误记录：当 `request_type` 为 'error' 且 `response_param` 不包含 '<Response>' 时标记为解析失败
+4. 只保留科室代码为9开头的日志记录
+5. 创建索引提高查询效率
+
+第二步：创建临时表 temp_OrderIdLisLost
+作用：找出检验结果表中没有结果数据的申请单
+逻辑：
+1. 从 `t_depart_result_f594102095fd9263b9ee22803eb3f4e5` 和关联表中查询数据
+2. 筛选条件：
+   - 排除已删除记录（del_flag <> '1'）
+   - 排除γ干扰素释放试验项目
+   - 限定科室为检验科（office_id = '90405'）
+   - 匹配指定订单号
+3. 通过 GROUP BY 和 HAVING 条件筛选出所有检测项目都没有结果的申请单
+
+第三步：查询最终结果
+作用：关联所有相关表，展示缺失检验结果的详细信息
+逻辑：
+1. 多表关联查询，获取申请单的完整信息
+2. 左连接 t_LisHL7Log 表获取错误原因
+3. 使用窗口函数 DENSE_RANK() 进行排序和统计
+4. 筛选条件包括：
+   - 排除已删除记录
+   - 匹配指定订单号
+   - 申请单号在缺失结果的申请单列表中
+5. 按错误原因、序号、分组名称排序输出结果
+*/
+
+-- LIS
+-- 心电图室-90401；影像科-90402；彩超室-90403；病病理科-90404；检验科-90405；内镜中心-90120
+SET @orderCode = '202509060001';
 DROP TEMPORARY TABLE IF EXISTS t_LisHL7Log;
 CREATE TEMPORARY TABLE t_LisHL7Log
 (
-    OrderIdLog    VARCHAR(255) ,
-    responseParam VARCHAR(255) ,
-    INDEX idx_OrderIdLog (OrderIdLog) ,
+    OrderIdLog    VARCHAR(255),
+    responseParam VARCHAR(255),
+    INDEX idx_OrderIdLog (OrderIdLog),
     INDEX idx_responseParam (responseParam)
 ) AS
 SELECT DISTINCT
-       LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '^^', 1), 20) AS OrderIdLog,
+       LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20) AS OrderIdLog,
        CASE
            WHEN EXISTS(
                    SELECT 1
@@ -20,12 +59,12 @@ SELECT DISTINCT
                      AND l2.id = l.id
                ) THEN '解析报文失败(request_type:error)'
            ELSE NULL
-       END AS responseParam
+           END AS responseParam
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5 l
 WHERE l.log_type = 2
   AND l.del_flag = 0
-  AND LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '^^', 1), 20) LIKE '9%'
-  AND (name = 'PacsReceiveHL7Message' OR name = 'ReceiveHL7Message');
+  AND LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20) LIKE '9%'
+  AND (l.name = 'LisReceiveHL7Message' OR l.name = 'ReceiveHL7Message');
 
 
 -- 2. result表没有结果
@@ -42,7 +81,8 @@ WHERE gp.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dr.del_flag <> '1'
   AND dir.del_flag <> '1'
-  AND dir.office_id IN ('90402')
+  AND dr.group_item_name <> 'γ干扰素释放试验'
+  AND dir.office_id IN ('90405')
   AND go.order_code = @orderCode
 GROUP BY
     dir.order_application_id,
@@ -51,7 +91,11 @@ HAVING SUM(ISNULL(result)) = COUNT(1);
 
 -- 4.LOG表没有回传报文，result表没有结果
 SELECT DISTINCT
-       DENSE_RANK() OVER (ORDER BY CASE WHEN gp.is_pass=1 THEN 1 WHEN gp.is_pass=2 THEN 2 WHEN gp.is_pass=3 THEN 3 ELSE 4 END,IFNULL(t.responseParam, 'log无返回报文'),og.name,gp.patient_id ASC) AS 序号,
+       DENSE_RANK() OVER (ORDER BY CASE WHEN gp.is_pass = 1 THEN 1
+                                        WHEN gp.is_pass = 2 THEN 2
+                                        WHEN gp.is_pass = 3 THEN 3
+                                        ELSE 4 END,
+           IFNULL(t.responseParam, 'log无返回报文'),og.name,gp.patient_id ASC) AS 序号,
        go.order_code AS 订单号,
        go.order_name AS 订单名称,
        og.name AS 分组名称,
@@ -66,14 +110,14 @@ SELECT DISTINCT
             WHEN gp.is_pass = 2 THEN '在检'
             WHEN gp.is_pass = 3 THEN '总检'
             ELSE '已完成'
-       END AS 体检状态,
+           END AS 体检状态,
        CASE WHEN gp.fee_status = 2 THEN '已退费'
             WHEN gp.fee_status = -99 THEN '退费中'
             ELSE NULL
-       END AS 收费状态,
+           END AS 收费状态,
        dr.group_item_name AS 检测项目,
        IFNULL(t.responseParam, 'log无返回报文') AS 原因,
-       DENSE_RANK() OVER (PARTITION BY IFNULL(t.responseParam, 'log无返回报文') 
+       DENSE_RANK() OVER (PARTITION BY IFNULL(t.responseParam, 'log无返回报文')
            ORDER BY CASE WHEN gp.is_pass = 1 THEN 1 WHEN gp.is_pass = 2 THEN 2 WHEN gp.is_pass = 3 THEN 3 ELSE 4 END,
                IFNULL(t.responseParam, 'log无返回报文'),og.name,gp.patient_id,IFNULL(t.responseParam, 'log无返回报文') ASC) AS 统计
 FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr

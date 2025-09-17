@@ -1,6 +1,6 @@
 -- LIS
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
-SET @orderCode = '202509100001';
+SET @orderCode = '202509060001';
 DROP TEMPORARY TABLE IF EXISTS t_LisHL7Log;
 CREATE TEMPORARY TABLE t_LisHL7Log
 (
@@ -10,7 +10,13 @@ CREATE TEMPORARY TABLE t_LisHL7Log
     INDEX idx_responseParam (responseParam)
 ) AS
 SELECT DISTINCT
-       LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20) AS OrderIdLog,
+       CASE WHEN (l.name = 'LisReceiveHL7Message' OR l.name = 'ReceiveHL7Message') THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20)
+            WHEN (name = 'PacsReceiveHL7Message' OR name = 'ReceiveHL7Message') THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '^^', 1), 20)
+            WHEN request_param LIKE '%ECG||RIS%' THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SC|', -1), '^^', 1), 20)
+            ELSE NULL END AS OrderIdLog,
        CASE
            WHEN EXISTS(
                    SELECT 1
@@ -25,7 +31,13 @@ FROM t_log_f594102095fd9263b9ee22803eb3f4e5 l
 WHERE l.log_type = 2
   AND l.del_flag = 0
   AND LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20) LIKE '9%'
-  AND (l.name = 'LisReceiveHL7Message' OR l.name = 'ReceiveHL7Message');
+  AND CASE WHEN (l.name = 'LisReceiveHL7Message' OR l.name = 'ReceiveHL7Message') THEN
+               LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20)
+           WHEN (NAME = 'PacsReceiveHL7Message' OR NAME = 'ReceiveHL7Message') THEN
+               LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '^^', 1), 20)
+           WHEN request_param LIKE '%ECG||RIS%' THEN
+               LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SC|', -1), '^^', 1), 20)
+           ELSE NULL END IS NOT NULL;
 
 
 -- 2. result表没有结果
@@ -43,7 +55,7 @@ WHERE gp.del_flag <> '1'
   AND dr.del_flag <> '1'
   AND dir.del_flag <> '1'
   AND dr.group_item_name <> 'γ干扰素释放试验'
-  AND dir.office_id IN ('90405')
+  AND dir.office_id IN ('90405', '90402', '90401')
   AND go.order_code = @orderCode
 GROUP BY
     dir.order_application_id,
@@ -56,7 +68,7 @@ SELECT DISTINCT
                                         WHEN gp.is_pass = 2 THEN 2
                                         WHEN gp.is_pass = 3 THEN 3
                                         ELSE 4 END,
-          IFNULL(t.responseParam, 'log无返回报文'),og.name,gp.patient_id ASC) AS 序号,
+           IFNULL(t.responseParam, 'log无返回报文'),og.name,gp.patient_id ASC) AS 序号,
        go.order_code AS 订单号,
        go.order_name AS 订单名称,
        og.name AS 分组名称,
@@ -67,8 +79,7 @@ SELECT DISTINCT
        dr.order_application_id AS 申请单号,
        dr.barcode AS 合管申请号,
        dr.office_name AS 科室名称,
-       CASE WHEN rppc.state = 2 THEN '已弃检'
-            WHEN gp.is_pass = 1 THEN '登记'
+       CASE WHEN gp.is_pass = 1 THEN '登记'
             WHEN gp.is_pass = 2 THEN '在检'
             WHEN gp.is_pass = 3 THEN '总检'
             ELSE '已完成'
@@ -88,8 +99,6 @@ FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
     LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON og.id = gp.group_id
     LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
     LEFT JOIN t_LisHL7Log t ON t.OrderIdLog = dr.barcode AND responseParam IS NOT NULL
-    LEFT JOIN relation_person_project_check_f594102095fd9263b9ee22803eb3f4e5 rppc
-              ON rppc.person_id = gp.id AND rppc.order_group_item_id = dr.group_item_id
 WHERE dr.del_flag <> '1'
   AND dir.del_flag <> '1'
   AND gp.del_flag <> '1'
@@ -97,7 +106,6 @@ WHERE dr.del_flag <> '1'
   AND go.del_flag <> '1'
   AND go.order_code = @orderCode
   AND dr.barcode IN (SELECT 申请单号 FROM temp_OrderIdLisLost)
-  -- AND rppc.state <> 2 -- 排除已弃检项目
 ORDER BY
     原因,
     序号,

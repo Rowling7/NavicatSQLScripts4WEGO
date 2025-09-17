@@ -22,14 +22,16 @@ SELECT DISTINCT
        go.order_code AS 订单号,
        go.order_name AS 订单名称,
        og.name AS 分组名称,
-       dr.order_application_id AS 申请单号,
+       -- dr.order_application_id AS 申请单号,
        gp.patient_id AS HIS号,
        gp.test_num AS 体检编号,
        gp.person_name AS 姓名,
        gp.id_card AS 身份证号,
        dr.group_item_name AS 检测项目,
+			 dr.order_application_id AS 申请单号,
        dr.office_name AS 科室名称,
-       CASE WHEN gp.is_pass = 1 THEN '登记'
+       CASE when rppc.state =2 then '已弃检'
+            WHEN gp.is_pass = 1 THEN '登记'
             WHEN gp.is_pass = 2 THEN '在检'
             WHEN gp.is_pass = 3 THEN '总检'
             ELSE '已完成'
@@ -46,7 +48,7 @@ WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dr.del_flag <> '1'
-  AND go.order_code = '202508270670'
-  AND dr.office_id IN ('90401', '90402', '90403', '90404', '90120')
+  AND go.order_code = '202509160001'
+  AND dr.office_id IN ('90401', '90402', '90403', '90404', '90405','90120')
   AND dr.order_application_id NOT IN (SELECT OrderIdLog FROM t_OrderIdHL7Log)
 ORDER BY 序号,分组名称;

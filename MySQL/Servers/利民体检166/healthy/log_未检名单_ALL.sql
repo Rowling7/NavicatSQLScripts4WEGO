@@ -1,15 +1,21 @@
--- LIS
+-- ALL
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
 SET @orderCode = '202508310001';
-DROP TEMPORARY TABLE IF EXISTS t_LisHL7Log;
-CREATE TEMPORARY TABLE t_LisHL7Log
+DROP TEMPORARY TABLE IF EXISTS t_ALLHL7Log;
+CREATE TEMPORARY TABLE t_ALLHL7Log
 (
     OrderIdLog    VARCHAR(255),
     responseParam VARCHAR(255),
     INDEX idx_OrderIdLog (OrderIdLog,responseParam)
 ) AS
 SELECT DISTINCT
-       LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20) AS OrderIdLog,
+       CASE WHEN request_param LIKE '%ORC|SC|%' THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SC|', -1), '^^', 1), 20)
+            WHEN request_param LIKE '%ORC|NW|%' THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '^^', 1), 20)
+            WHEN request_param LIKE '%ORC|SN|%' THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20)
+						else null end AS OrderIdLog,
        CASE
            WHEN EXISTS(
                    SELECT 1
@@ -23,14 +29,18 @@ SELECT DISTINCT
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5 l
 WHERE l.log_type = 2
   AND l.del_flag = 0
-  AND LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20) LIKE '9%'
-  AND (l.name in( 'LisReceiveHL7Message' ,'ReceiveHL7Message'));
+  AND CASE WHEN request_param LIKE '%ORC|SC|%' THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|SC|', -1), '^^', 1), 20)
+            WHEN request_param LIKE '%ORC|NW|%' THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '^^', 1), 20)
+            WHEN request_param LIKE '%ORC|SN|%' THEN
+                LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(l.request_param, 'ORC|SN|', -1), '|||||||', 1), 20)
+						else null end LIKE '9%';
 
 
 -- 2. result表没有结果
-SET @orderCode = '202508310001';
-DROP TEMPORARY TABLE IF EXISTS temp_OrderIdLisLost;
-CREATE TEMPORARY TABLE temp_OrderIdLisLost(
+DROP TEMPORARY TABLE IF EXISTS temp_OrderIdALLLost;
+CREATE TEMPORARY TABLE temp_OrderIdALLLost(
     OrderIdLost    VARCHAR(255),
     INDEX idx_OrderIdLost (OrderIdLost)
 ) AS
@@ -45,8 +55,7 @@ WHERE gp.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dr.del_flag <> '1'
   AND dir.del_flag <> '1'
-  AND dr.group_item_name <> 'γ干扰素释放试验'
-  AND dir.office_id IN ('90405')
+  AND dir.office_id IN ('90401','90402','90403','90404','90405','90120')
   AND go.order_code = @orderCode
 GROUP BY
     dir.order_application_id,
@@ -91,7 +100,7 @@ FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
 		LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON dr.person_id = gp.id
     LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON og.id = gp.group_id
     LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
-    LEFT JOIN t_LisHL7Log t ON t.OrderIdLog = dr.barcode AND responseParam IS NOT NULL
+    LEFT JOIN t_ALLHL7Log t ON t.OrderIdLog = dr.barcode AND responseParam IS NOT NULL
     LEFT JOIN relation_person_project_check_f594102095fd9263b9ee22803eb3f4e5 rppc
               ON rppc.person_id = gp.id AND dr.office_id=rppc.office_id and rppc.state ='2' AND rppc.order_group_item_id = dr.group_item_id
 WHERE dr.del_flag <> '1'
@@ -99,7 +108,7 @@ WHERE dr.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
   AND go.order_code = @orderCode
-  AND dr.barcode IN (SELECT OrderIdLost FROM temp_OrderIdLisLost)
+  AND dr.barcode IN (SELECT OrderIdLost FROM temp_OrderIdALLLost)
   -- AND rppc.state <> 2 -- 排除已弃检项目
 ORDER BY
     原因,

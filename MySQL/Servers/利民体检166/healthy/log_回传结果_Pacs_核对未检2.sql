@@ -1,13 +1,12 @@
 -- Pacs
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
-SET @orderCode = '202509100001';
-DROP TEMPORARY TABLE IF EXISTS t_LisHL7Log;
-CREATE TEMPORARY TABLE t_LisHL7Log
+SET @orderCode = '202509100004';
+DROP TEMPORARY TABLE IF EXISTS t_PacsHL7Log;
+CREATE TEMPORARY TABLE t_PacsHL7Log
 (
     OrderIdLog    VARCHAR(255),
     responseParam VARCHAR(255),
-    INDEX idx_OrderIdLog (OrderIdLog),
-    INDEX idx_responseParam (responseParam)
+    INDEX idx_OrderIdLog (OrderIdLog,responseParam)
 ) AS
 SELECT DISTINCT
        LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '^^', 1), 20) AS OrderIdLog,
@@ -25,12 +24,15 @@ FROM t_log_f594102095fd9263b9ee22803eb3f4e5 l
 WHERE l.log_type = 2
   AND l.del_flag = 0
   AND LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(request_param, 'ORC|NW|', -1), '^^', 1), 20) LIKE '9%'
-  AND (name = 'PacsReceiveHL7Message' OR name = 'ReceiveHL7Message');
+  AND (name in( 'PacsReceiveHL7Message','ReceiveHL7Message'));
 
 
 -- 2. result表没有结果
-DROP TEMPORARY TABLE IF EXISTS temp_OrderIdLisLost;
-CREATE TEMPORARY TABLE temp_OrderIdLisLost AS
+DROP TEMPORARY TABLE IF EXISTS temp_OrderIdPacsLost;
+CREATE TEMPORARY TABLE temp_OrderIdPacsLost(
+    OrderIdLost    VARCHAR(255),
+    INDEX idx_OrderIdLost (OrderIdLost)
+) AS
 SELECT DISTINCT dir.order_application_id AS 申请单号
 FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
     LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON dr.id = dir.depart_result_id
@@ -48,14 +50,14 @@ GROUP BY
     dir.order_application_id,
     dir.office_id
 HAVING SUM(ISNULL(result)) = COUNT(1);
-
+		
 -- 4.LOG表没有回传报文，result表没有结果
 SELECT DISTINCT
        DENSE_RANK() OVER (ORDER BY CASE WHEN gp.is_pass = 1 THEN 1
                                         WHEN gp.is_pass = 2 THEN 2
                                         WHEN gp.is_pass = 3 THEN 3
                                         ELSE 4 END,
-					IFNULL(t.responseParam, 'log无返回报文'),og.name,gp.patient_id ASC) AS 序号,
+          IFNULL(t.responseParam, 'log无返回报文/未参与体检'),og.name,gp.patient_id ASC) AS 序号,
        go.order_code AS 订单号,
        go.order_name AS 订单名称,
        og.name AS 分组名称,
@@ -81,22 +83,21 @@ SELECT DISTINCT
        DENSE_RANK() OVER (PARTITION BY IFNULL(t.responseParam, 'log无返回报文')
            ORDER BY CASE WHEN gp.is_pass = 1 THEN 1 WHEN gp.is_pass = 2 THEN 2 WHEN gp.is_pass = 3 THEN 3 ELSE 4 END,
                IFNULL(t.responseParam, 'log无返回报文'),og.name,gp.patient_id,IFNULL(t.responseParam, 'log无返回报文') ASC) AS 统计
-FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
-    LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON dr.id = dir.depart_result_id
-    LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON dr.person_id = gp.id
+FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr 
+    LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON  dir.del_flag <> '1' AND dr.id = dir.depart_result_id
+		LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON dr.person_id = gp.id
     LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON og.id = gp.group_id
     LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
     LEFT JOIN t_LisHL7Log t ON t.OrderIdLog = dr.barcode AND responseParam IS NOT NULL
     LEFT JOIN relation_person_project_check_f594102095fd9263b9ee22803eb3f4e5 rppc
-              ON rppc.person_id = gp.id AND rppc.order_group_item_id = dr.group_item_id
+              ON rppc.person_id = gp.id AND dr.office_id=rppc.office_id and rppc.state ='2' AND rppc.order_group_item_id = dr.group_item_id
 WHERE dr.del_flag <> '1'
-  AND dir.del_flag <> '1'
   AND gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
-  -- AND rppc.state <> 2 -- 排除已弃检项目
   AND go.order_code = @orderCode
-  AND dr.barcode IN (SELECT 申请单号 FROM temp_OrderIdLisLost)
+  AND dr.barcode IN (SELECT OrderIdLost FROM temp_OrderIdLisLost)
+  -- AND rppc.state <> 2 -- 排除已弃检项目
 ORDER BY
     原因,
     序号,

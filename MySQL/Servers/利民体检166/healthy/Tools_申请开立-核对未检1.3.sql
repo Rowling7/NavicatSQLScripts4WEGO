@@ -29,9 +29,9 @@ SELECT DISTINCT
        gp.id_card AS 身份证号,
        dr.group_item_name AS 检测项目,
 			 dr.order_application_id AS 申请单号,
+			 dr.barcode AS 合管号,
        dr.office_name AS 科室名称,
-       CASE when rppc.state =2 then '已弃检'
-            WHEN gp.is_pass = 1 THEN '登记'
+       CASE WHEN gp.is_pass = 1 THEN '登记'
             WHEN gp.is_pass = 2 THEN '在检'
             WHEN gp.is_pass = 3 THEN '总检'
             ELSE '已完成'

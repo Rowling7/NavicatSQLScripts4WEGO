@@ -16,5 +16,4 @@ LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id
 WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
-  AND go.order_code='202509100002'-- 团检单号
-	-- AND gp.create_time >'2025-09-08 00:05:52'
+  AND go.order_code='202508310001'

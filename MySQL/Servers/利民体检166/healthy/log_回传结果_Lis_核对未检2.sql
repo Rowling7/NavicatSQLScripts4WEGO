@@ -28,13 +28,9 @@ WHERE l.log_type = 2
 
 
 -- 2. result表没有结果
-SET @orderCode = '202508310001';
 DROP TEMPORARY TABLE IF EXISTS temp_OrderIdLisLost;
-CREATE TEMPORARY TABLE temp_OrderIdLisLost(
-    OrderIdLost    VARCHAR(255),
-    INDEX idx_OrderIdLost (OrderIdLost)
-) AS
-SELECT DISTINCT dir.order_application_id AS OrderIdLost
+CREATE TEMPORARY TABLE temp_OrderIdLisLost AS
+	SELECT  dir.barcode AS OrderIdLost
 FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
     LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON dr.id = dir.depart_result_id
     LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON dr.person_id = gp.id
@@ -47,11 +43,12 @@ WHERE gp.del_flag <> '1'
   AND dir.del_flag <> '1'
   AND dr.group_item_name <> 'γ干扰素释放试验'
   AND dir.office_id IN ('90405')
-  AND go.order_code = @orderCode
+  AND go.order_code = @orderCode			
 GROUP BY
-    dir.order_application_id,
+    dir.barcode,
     dir.office_id
-HAVING SUM(ISNULL(result)) = COUNT(1);
+HAVING SUM(ISNULL(result)) = COUNT(1); -- 未检
+-- HAVING SUM(ISNULL(result)) <> COUNT(1);		--有检
 
 
 -- 4.LOG表没有回传报文，result表没有结果
@@ -98,10 +95,12 @@ WHERE dr.del_flag <> '1'
   AND gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
+	AND dir.office_id IN ('90405')
   AND go.order_code = @orderCode
-  AND dr.barcode IN (SELECT OrderIdLost FROM temp_OrderIdLisLost)
+  AND COALESCE(dr.barcode,dr.order_application_id) IN (SELECT OrderIdLost FROM temp_OrderIdLisLost)
   -- AND rppc.state <> 2 -- 排除已弃检项目
 ORDER BY
     原因,
     序号,
-    分组名称;
+    分组名称,
+		合管申请号;

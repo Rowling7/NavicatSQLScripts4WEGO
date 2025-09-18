@@ -1,6 +1,6 @@
 -- LIS
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
-SET @orderCode = '202508310001';
+SET @orderCode = '202509060001';
 DROP TEMPORARY TABLE IF EXISTS t_LisHL7Log;
 CREATE TEMPORARY TABLE t_LisHL7Log
 (
@@ -30,7 +30,7 @@ WHERE l.log_type = 2
 -- 2. result表没有结果
 DROP TEMPORARY TABLE IF EXISTS temp_OrderIdLisLost;
 CREATE TEMPORARY TABLE temp_OrderIdLisLost AS
-	SELECT  dir.barcode AS OrderIdLost
+SELECT  dir.barcode AS OrderIdLost
 FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
     LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON dr.id = dir.depart_result_id
     LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON dr.person_id = gp.id
@@ -43,7 +43,7 @@ WHERE gp.del_flag <> '1'
   AND dir.del_flag <> '1'
   AND dr.group_item_name <> 'γ干扰素释放试验'
   AND dir.office_id IN ('90405')
-  AND go.order_code = @orderCode			
+  AND go.order_code = @orderCode
 GROUP BY
     dir.barcode,
     dir.office_id

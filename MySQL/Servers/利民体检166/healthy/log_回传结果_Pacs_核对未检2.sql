@@ -29,11 +29,8 @@ WHERE l.log_type = 2
 
 -- 2. result表没有结果
 DROP TEMPORARY TABLE IF EXISTS temp_OrderIdPacsLost;
-CREATE TEMPORARY TABLE temp_OrderIdPacsLost(
-    OrderIdLost    VARCHAR(255),
-    INDEX idx_OrderIdLost (OrderIdLost)
-) AS
-SELECT DISTINCT dir.order_application_id AS 申请单号
+CREATE TEMPORARY TABLE temp_OrderIdPacsLost AS
+SELECT  dir.barcode AS OrderIdLost
 FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
     LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir ON dr.id = dir.depart_result_id
     LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON dr.person_id = gp.id
@@ -47,10 +44,12 @@ WHERE gp.del_flag <> '1'
   AND dir.office_id IN ('90402')
   AND go.order_code = @orderCode
 GROUP BY
-    dir.order_application_id,
+    dir.barcode,
     dir.office_id
-HAVING SUM(ISNULL(result)) = COUNT(1);
-		
+HAVING SUM(ISNULL(result)) = COUNT(1); -- 未检
+-- HAVING SUM(ISNULL(result)) <> COUNT(1);		--有检
+
+
 -- 4.LOG表没有回传报文，result表没有结果
 SELECT DISTINCT
        DENSE_RANK() OVER (ORDER BY CASE WHEN gp.is_pass = 1 THEN 1
@@ -88,7 +87,7 @@ FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
 		LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON dr.person_id = gp.id
     LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON og.id = gp.group_id
     LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id
-    LEFT JOIN t_LisHL7Log t ON t.OrderIdLog = dr.barcode AND responseParam IS NOT NULL
+    LEFT JOIN t_PacsHL7Log t ON t.OrderIdLog = dr.barcode AND responseParam IS NOT NULL
     LEFT JOIN relation_person_project_check_f594102095fd9263b9ee22803eb3f4e5 rppc
               ON rppc.person_id = gp.id AND dr.office_id=rppc.office_id and rppc.state ='2' AND rppc.order_group_item_id = dr.group_item_id
 WHERE dr.del_flag <> '1'
@@ -96,9 +95,10 @@ WHERE dr.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
   AND go.order_code = @orderCode
-  AND dr.barcode IN (SELECT OrderIdLost FROM temp_OrderIdLisLost)
+  AND COALESCE(dr.barcode,dr.order_application_id) IN (SELECT OrderIdLost FROM temp_OrderIdPacsLost)
   -- AND rppc.state <> 2 -- 排除已弃检项目
 ORDER BY
     原因,
     序号,
-    分组名称;
+    分组名称,
+		合管申请号;

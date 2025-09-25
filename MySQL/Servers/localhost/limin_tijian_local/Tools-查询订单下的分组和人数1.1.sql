@@ -9,7 +9,7 @@ WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
   -- AND go.order_name = '恒德技工技术学院2025'
-	AND go.order_code='202509100003'
+	AND go.order_code='202508310001'
 group by go.order_name,SUBSTRING(og.name, 1, LOCATE('-', og.name) - 1),SUBSTRING(og.name, LOCATE('-', og.name) + 1) with rollup
 having grouping(学院)=grouping(专业)and go.order_name is not null
 order by 人数

@@ -1,0 +1,47 @@
+SELECT gp.id,
+gp.person_name,
+			gp.test_num,
+			gp.patient_id,
+			gp.id_card,
+			dr.barcode,
+			dr.barname
+FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
+left join t_depart_result_f594102095fd9263b9ee22803eb3f4e5  dr on  gp.id=dr.person_id
+where gp.test_num in('175748342000493');
+
+
+/*
+SELECT distinct hrul.patient_id HIS号, gp.person_name 姓名, hrul.order_application_id 申请单号,dir.order_group_item_name 项目, hrul.exec_time 执行时间,hrul.retry_count 执行次数, hrul.is_completed 完成状态, hrul.status 状态
+FROM healthy_result_update_list hrul
+    LEFT JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp ON hrul.patient_id = gp.patient_id
+left join t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir on dir.barcode=hrul.order_application_id
+WHERE hrul.order_application_id in('90001100817',
+'90001100818',
+'90001100819',
+'90001100820',
+'90001100821',
+'90001101167',
+'90001101168',
+'90001101169',
+'90001101170',
+'90001101171'
+)
+ORDER BY HIS号
+
+
+
+
+id	person_name	test_num	patient_id	id_card	barcode	barname
+dcdfc717c9264ab899ca0504a853c585	张沙沙	175800892401895	2023082329	372330198812193327	'90001100817',	妇科检查
+dcdfc717c9264ab899ca0504a853c585	张沙沙	175800892401895	2023082329	372330198812193327	'90001100818',	总检报告
+dcdfc717c9264ab899ca0504a853c585	张沙沙	175800892401895	2023082329	372330198812193327	'90001100819',	彩超乳腺+妇科
+dcdfc717c9264ab899ca0504a853c585	张沙沙	175800892401895	2023082329	372330198812193327	'90001100820',	液基薄层细胞制片术（TCT）
+dcdfc717c9264ab899ca0504a853c585	张沙沙	175800892401895	2023082329	372330198812193327	'90001100821',	阴道分泌物检查
+e7ccc4ecdca8427499f5d1d58dd52d17	张沙沙	175800928302630	2022663754	371083198907072523	'90001101167',	妇科检查
+e7ccc4ecdca8427499f5d1d58dd52d17	张沙沙	175800928302630	2022663754	371083198907072523	'90001101168',	总检报告
+e7ccc4ecdca8427499f5d1d58dd52d17	张沙沙	175800928302630	2022663754	371083198907072523	'90001101169',	彩超乳腺+妇科
+e7ccc4ecdca8427499f5d1d58dd52d17	张沙沙	175800928302630	2022663754	371083198907072523	'90001101170',	液基薄层细胞制片术（TCT）
+e7ccc4ecdca8427499f5d1d58dd52d17	张沙沙	175800928302630	2022663754	371083198907072523	'90001101171',	阴道分泌物检查
+
+
+*/

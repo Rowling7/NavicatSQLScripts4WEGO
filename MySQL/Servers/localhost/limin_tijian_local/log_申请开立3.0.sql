@@ -1,6 +1,6 @@
 -- 申请开立|心电图室-0401 影像科-0402 彩超室-0403 内镜中心-0120
 WITH OrderIdHL7 AS (
-SELECT distinct dr.order_application_id AS param
+SELECT distinct dr.barcode AS param
 			FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
 			LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5  og ON gp.group_id = og.id
 			LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5  go ON og.group_order_id = go.id
@@ -9,7 +9,7 @@ SELECT distinct dr.order_application_id AS param
 				AND og.del_flag <> '1'
 				AND go.del_flag <> '1'
 				AND dr.del_flag <> '1'
-				AND go.order_code='202509060001'
+				AND go.order_code='202509300001'
 				-- and gp.person_name ='王丽'
 				-- AND go.order_name = '威海市明德职业中等专业学校2025'
 )
@@ -40,3 +40,15 @@ WHERE log_type = 2
            ELSE NULL END,'^^',-1) IN (SELECT param FROM OrderIdHL7)
 ORDER BY 序号 asc,申请单号 desc;
 
+/*
+SELECT distinct dr.barcode AS param
+			FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
+			LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5  og ON gp.group_id = og.id
+			LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5  go ON og.group_order_id = go.id
+			LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON dr.person_id = gp.id
+			WHERE gp.del_flag <> '1'
+				AND og.del_flag <> '1'
+				AND go.del_flag <> '1'
+				AND dr.del_flag <> '1'
+				AND go.order_code='202509300001'
+				and dr.office_id in( '90401','90402','90403','90120')*/

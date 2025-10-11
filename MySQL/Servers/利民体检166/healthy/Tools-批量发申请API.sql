@@ -24,4 +24,8 @@ SELECT CONCAT('CALL p_healthy_result_ins(''', test_num, ''', ''f594102095fd9263b
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5
 WHERE order_id = '8fcc017bf3002ee8796bd6bbee880944'
   AND del_flag = '0'
+<<<<<<< HEAD
   AND is_pass = 2;
+=======
+  AND is_pass = 2;
+>>>>>>> 64461b01aff27416f7115c0e3c04a0a12607a54e

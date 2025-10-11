@@ -48,7 +48,7 @@ WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dr.del_flag <> '1'
-  AND go.order_code = '202509160001'
+  AND go.order_code = '202510090001'
   AND dr.office_id IN ('90401', '90402', '90403', '90404', '90405','90120')
-  AND dr.order_application_id NOT IN (SELECT OrderIdLog FROM t_OrderIdHL7Log)
+  AND dr.order_application_id  IN (SELECT OrderIdLog FROM t_OrderIdHL7Log)
 ORDER BY 序号,分组名称;

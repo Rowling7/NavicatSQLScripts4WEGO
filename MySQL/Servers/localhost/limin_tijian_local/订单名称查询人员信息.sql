@@ -21,7 +21,6 @@ JOIN
     ON og.group_order_id = go.id and go.del_flag<>'1'
 WHERE
 		gp.del_flag<>'1'
-    AND go.order_name = '文登金色摇篮幼儿园2025年'
-    -- OR go.group_unit_name = '全面测试620'
+    AND go.order_code='202510090001'
 ORDER BY
     og.name, gp.person_name;

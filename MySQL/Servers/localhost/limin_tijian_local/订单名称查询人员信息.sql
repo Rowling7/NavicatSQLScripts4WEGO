@@ -1,16 +1,12 @@
 -- 通过订单名称查询该订单下所有分组的人员信息
 SELECT
-    go.id AS orderID,
-		go.order_name AS 订单名称,
-    gp.id AS personId,
-    gp.person_name 姓名,
-    gp.sex 性别,
-    gp.id_card 身份证号,
-    gp.mobile 手机号,
-    gp.dept AS 团检单位,
-    og.id AS 分组ID,
-    og.name AS 分组名称,
-    og.person_count AS 分组总人数
+    go.order_code AS 订单号,
+       go.order_name AS 订单名称,
+       og.name AS 分组名称,
+       gp.test_num AS 体检编号,
+       gp.patient_id AS HIS号,
+       gp.person_name AS 姓名,
+       gp.id_card AS 身份证号
 FROM
     t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
 JOIN
@@ -21,6 +17,6 @@ JOIN
     ON og.group_order_id = go.id and go.del_flag<>'1'
 WHERE
 		gp.del_flag<>'1'
-    AND go.order_code='202510090001'
+    AND go.order_code='202508280001'
 ORDER BY
     og.name, gp.person_name;

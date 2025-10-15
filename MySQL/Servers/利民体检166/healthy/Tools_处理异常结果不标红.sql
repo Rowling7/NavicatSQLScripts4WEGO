@@ -6,7 +6,7 @@
  * 5. 检查重新执行时间和状态
  */
 
-SET @testNum = '175746820000020';
+SET @testNum = '176043017400006';
 SELECT @testNumR := id
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5
 WHERE test_num = @testNum;

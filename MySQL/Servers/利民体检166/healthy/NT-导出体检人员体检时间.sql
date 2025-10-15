@@ -1,6 +1,6 @@
 -- ALL
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
-SET @orderCode = '202509160001';
+SET @orderCode = '202509300001';
 -- 2. result表没有结果
 DROP TEMPORARY TABLE IF EXISTS temp_OrderIdLisLost;
 CREATE TEMPORARY TABLE temp_OrderIdLisLost AS
@@ -56,7 +56,7 @@ SELECT DISTINCT
             ELSE NULL
            END AS 收费状态,*/
 					 gp.inspection_time AS 导引单打印时间,
-					 min(dir.check_date) AS 导引单打印时间,
+					 min(dir.check_date) AS 体检时间,
 					 min(ifnull(gp.inspection_time,dir.check_date))
        -- dr.group_item_name AS 检测项目
 FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr 
@@ -84,5 +84,4 @@ group by go.order_code,
 								
 ORDER BY
 去重序号,
-    分组名称,
-		检测项目;
+    分组名称;

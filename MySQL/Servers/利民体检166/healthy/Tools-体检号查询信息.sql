@@ -28,4 +28,19 @@ where  gp.person_name in('于文轩','宋锡林','胡俊熙','孙然','杨佳乐
  and dr.barname ='内科检查'
  )
  
+ 
+ 
+ 
+ 
+ 
+ person_id in (
+ SELECT DISTINCT gp.id
+FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
+    LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON gp.id = dr.person_id AND dr.del_flag <> '1'
+    LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id AND og.del_flag <> '1'
+WHERE gp.del_flag <> '1'
+  AND dr.barname IN ('内科检查', '外科检查', '一般检查', '眼科检查')
+  AND og.id IN
+      ('1aed38db5ab3487c8865d466de4320ca', 'ab84ea6be1f44c77af559e6b4496d097', '6747ccb13a8e46409a23c5a208878add')
+ )
  */

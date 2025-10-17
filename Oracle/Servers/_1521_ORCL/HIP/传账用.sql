@@ -1,0 +1,1 @@
+select * from hip.WGTJ_EXAM  where 单位名称 ='威海市明德职业中等专业学校2025'

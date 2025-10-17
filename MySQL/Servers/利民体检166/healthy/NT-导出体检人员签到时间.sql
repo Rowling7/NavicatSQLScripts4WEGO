@@ -12,8 +12,8 @@ SELECT DISTINCT
        -- dr.barcode AS 合管申请号,
        -- dr.office_name AS 科室名称,
        CAST(gp.inspection_time AS CHAR) AS 指引单打印时间,
-       CAST(MIN(dir.check_date) AS CHAR) AS 体检时间,
-       CAST(MIN(IFNULL(gp.inspection_time, dir.check_date)) AS CHAR) AS 最小时间
+       CAST(MIN(dir.check_date) AS CHAR) AS 体检时间
+       -- CAST(MIN(IFNULL(gp.inspection_time, dir.check_date)) AS CHAR) AS 最小时间
        -- dr.group_item_name AS 检测项目
 FROM t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr
     LEFT JOIN t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir
@@ -27,7 +27,7 @@ WHERE dr.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dir.office_id IN ('90401', '90402', '90403', '90404', '90405', '90120')
   AND go.order_code = @orderCode
-  -- AND CAST(gp.inspection_time AS  CHAR(10)) > CAST(now() AS CHAR(10))
+   AND CAST(gp.inspection_time AS  CHAR(10)) >=  CAST(now() AS CHAR(10))
 GROUP BY
     go.order_code,
     go.order_name,

@@ -11,13 +11,9 @@ SELECT DISTINCT
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
     LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON gp.id = dr.person_id
 -- left join t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir  on dir.depart_result_id=dr.id
-WHERE gp.id IN ('e7ccc4ecdca8427499f5d1d58dd52d17', 'dcdfc717c9264ab899ca0504a853c585')
-   OR gp.test_num = '176032406800095'
+WHERE gp.test_num in( '175720370200136','175720368800104')
 
  /*gp.person_name in('于文轩','宋锡林','胡俊熙','孙然','杨佳乐','仇成山','孙子皓','王正昊','陈泉宇','王翔')
-
-
-
 
 person_id in (
 SELECT distinct gp.id

@@ -27,7 +27,7 @@ WHERE dr.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dir.office_id IN ('90401', '90402', '90403', '90404', '90405', '90120')
   AND go.order_code = @orderCode
-   AND CAST(gp.inspection_time AS  CHAR(10)) >=  CAST(now() AS CHAR(10))
+   AND CAST(gp.inspection_time AS  CHAR(10))  = CAST(now() AS CHAR(10))
 GROUP BY
     go.order_code,
     go.order_name,

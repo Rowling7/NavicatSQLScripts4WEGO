@@ -1,6 +1,6 @@
 -- ALL
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
-SET @orderCode = '202509160001';
+SET @orderCode = '202510140001';
 -- 2. result表没有结果
 DROP TEMPORARY TABLE IF EXISTS temp_OrderIdLisLost;
 CREATE TEMPORARY TABLE temp_OrderIdLisLost AS
@@ -69,6 +69,7 @@ WHERE dr.del_flag <> '1'
   AND go.order_code = @orderCode
   AND COALESCE(dr.barcode,dr.order_application_id) IN (SELECT OrderIdLost FROM temp_OrderIdLisLost)
   -- AND rppc.state <> 2 -- 排除已弃检项目
+		and dr.group_item_name like '%常规心电图自动分析%'
 ORDER BY
 去重序号,
     分组名称,

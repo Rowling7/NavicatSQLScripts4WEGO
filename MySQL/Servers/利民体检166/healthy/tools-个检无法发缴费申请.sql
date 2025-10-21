@@ -45,4 +45,4 @@ LEFT JOIN t_his_clinic_price C1
     ON C.his_code=C1.portfolio_project_his_code 
 LEFT JOIN t_section_office_f594102095fd9263b9ee22803eb3f4e5 E 
     ON B.office_id = E.id 
-WHERE A.test_num = '176068668800003'  AND C1.sale_price is NULL
+WHERE A.test_num = '176094430600017'  AND C1.sale_price is NULL

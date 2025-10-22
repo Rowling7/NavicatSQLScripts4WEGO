@@ -6,6 +6,7 @@ WHERE portfolio_project_type = '检验';
 
 SELECT DISTINCT req_itemcode
 FROM 检验_lis_project_list;
+
 SELECT *
 FROM t_his_clinic_price a
 WHERE portfolio_project_his_code = '142';

@@ -17,6 +17,6 @@ JOIN
     ON og.group_order_id = go.id and go.del_flag<>'1'
 WHERE
 		gp.del_flag<>'1'
-    AND go.order_code='202508280001'
+    AND go.order_code='202510120001'
 ORDER BY
     og.name, gp.person_name;

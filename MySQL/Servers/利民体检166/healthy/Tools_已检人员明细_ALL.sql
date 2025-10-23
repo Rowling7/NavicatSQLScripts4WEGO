@@ -69,7 +69,7 @@ WHERE dr.del_flag <> '1'
   AND go.order_code = @orderCode
   AND COALESCE(dr.barcode,dr.order_application_id) IN (SELECT OrderIdLost FROM temp_OrderIdLisLost)
   -- AND rppc.state <> 2 -- 排除已弃检项目
-		and dr.group_item_name like '%常规心电图自动分析%'
+	-- 	and dr.group_item_name like '%常规心电图自动分析%'
 ORDER BY
 去重序号,
     分组名称,

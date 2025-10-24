@@ -1,6 +1,6 @@
 -- ALL
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
-SET @orderCode = '202510140001';
+SET @orderCode = '202509160001';
 -- 2. result表没有结果
 DROP TEMPORARY TABLE IF EXISTS temp_OrderIdLisLost;
 CREATE TEMPORARY TABLE temp_OrderIdLisLost AS

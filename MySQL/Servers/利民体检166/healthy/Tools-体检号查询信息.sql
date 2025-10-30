@@ -10,12 +10,52 @@ SELECT DISTINCT
        -- dir.barcode
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
     LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON gp.id = dr.person_id
--- left join t_depart_item_result_f594102095fd9263b9ee22803eb3f4e5 dir  on dir.depart_result_id=dr.id
-WHERE gp.test_num in( '176053613600073')
+WHERE gp.test_num in( '175657104300178')
 
  
  
  /*
+ SELECT DISTINCT
+       gp.id AS ID,
+       gp.person_name AS 姓名,
+       gp.test_num AS 体检号,
+       gp.patient_id AS HIS号,
+       gp.id_card AS 身份证号,
+       dr.barcode AS 申请合管号,
+       gp.inspection_time AS 导引单打印时间,
+       dr.barname AS 项目名称,
+       min(lg.create_time) AS 报文发送时间,
+       lg.request_param AS 报文,
+       hrul.create_time AS 队列创建时间,
+       hrul.exec_time AS 队列执行时间,
+       hrul.is_completed AS 完成状态,
+       hrul.status AS 状态
+FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
+    LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON gp.id = dr.person_id
+    LEFT JOIN t_log_f594102095fd9263b9ee22803eb3f4e5 lg
+              ON lg.request_param LIKE CONCAT('%', dr.barcode, '%') AND lg.log_type = 2 AND lg.request_param LIKE 'MSH%'
+    LEFT JOIN healthy_result_update_list hrul ON hrul.order_application_id = dr.barcode
+WHERE gp.test_num IN ('175657104300178')
+GROUP BY gp.id,
+         dr.barcode,
+         hrul.create_time,
+         hrul.exec_time,
+         hrul.is_completed,
+         hrul.status;
+*/
+
+
+
+/*
+ SELECT  *
+from t_log_f594102095fd9263b9ee22803eb3f4e5 lg
+where lg.request_param like '%90001074162%'
+order by create_time desc;
+
+SELECT *
+from healthy_result_update_list
+where order_application_id='90001074162';
+
  
  SELECT DISTINCT
        gp.id AS ID,
@@ -63,15 +103,6 @@ WHERE gp.id_card in
 ,'37100220071219256X')
  
  
- 
- SELECT  *
- from t_log_f594102095fd9263b9ee22803eb3f4e5 lg
- where lg.order_application_id ='90001119185';
- 
-  SELECT  *
- from t_log_f594102095fd9263b9ee22803eb3f4e5 lg
- where lg.request_param like '%2023081313%'
- order by create_time desc;
  
  
  gp.person_name in('于文轩','宋锡林','胡俊熙','孙然','杨佳乐','仇成山','孙子皓','王正昊','陈泉宇','王翔')

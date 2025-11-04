@@ -42,18 +42,21 @@ select ROW_NUMBER() OVER (ORDER BY CONVERT(VARCHAR(19), a.brjsrq, 120) deSC) AS 
 			when convert(varchar(max),c.err_msg) LIKE '%DSCG_CATY：必填项校验错误%' then '出院科室编码未填写或填写错误'
 			when convert(varchar(max),c.err_msg) LIKE '%BILL_CODE：必填项校验错误；BILL_NO：必填项校验错误%' then '票据单号未填写或填写错误'
 			when convert(varchar(max),c.err_msg) LIKE '%MEDINS_FILL_DEPT：必填项校验错误%' then '医药机构填报部门未填写或填写错误'
+			when convert(varchar(max),c.err_msg) LIKE '%checkResult：DIAG_CODE：必填项校验错误；DIAG_NAME：必填项校验错误%' then '诊断代码/诊断名称 未填写或填写错误'
 
-		else '请联系DRG工程师'
-		-- else convert(varchar(max),c.err_msg)
+		-- else '请联系DRG工程师'
+		else convert(varchar(max),c.err_msg)
 		end as 错误信息
 from t_setlinfo a
 left join t_mihs_result_relation b on a.mdtrt_sn = b.uid
 left join t_mihs_result c on b.resultid = c.id
 where c.infocode = -1
-
-	and a.brjsrq>=CASE WHEN ISNULL(@settleTimeStart, '') <> '' THEN @settleTimeStart
+	and a.brjsrq >= '2025-09-01'
+	and a.brjsrq < '2095-10-01'
+	/*and a.brjsrq>=CASE WHEN ISNULL(@settleTimeStart, '') <> '' THEN @settleTimeStart
             ELSE DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE() - 1), 0) END
 	and a.brjsrq< CASE WHEN ISNULL(@settleTimeEnd, '') <> '' THEN DATEADD(DAY, 1, @settleTimeEnd)
             ELSE DATEADD(DAY, 1, DATEADD(MONTH, DATEDIFF(MONTH, 01, GETDATE())+1, -1)) END
+	*/
   and err_msg not like '%省平台%'
 ORDER BY 结算时间 desc

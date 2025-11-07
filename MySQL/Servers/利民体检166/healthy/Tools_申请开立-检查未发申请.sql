@@ -35,12 +35,13 @@ SELECT DISTINCT DENSE_RANK( ) OVER (ORDER BY og.name,patient_id ) AS 序号
                     WHEN gp.fee_status = -99 THEN '退费中'
                     ELSE NULL
                 END AS 收费状态
+							,NULL '已发送'
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
      LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id AND og.del_flag <> '1'
      LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id AND go.del_flag <> '1'
      LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON dr.person_id = gp.id AND dr.del_flag <> '1'
 WHERE gp.del_flag <> '1'
-  AND go.order_code = '202510120001'
+  AND go.order_code = '202511070001'
   AND dr.office_id IN ( '90401' , '90402' , '90403' , '90404' , '90120' ) -- 去除检验科，检验项目不发申请
   AND EXISTS( SELECT 1
               FROM t_OrderIdHL7Log

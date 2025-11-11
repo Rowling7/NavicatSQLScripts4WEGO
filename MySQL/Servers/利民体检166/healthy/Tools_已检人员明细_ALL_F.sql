@@ -1,6 +1,6 @@
 -- ALL
 -- 心电图室-90401；影像科-90402；彩超室-90403；病理科-90404；检验科-90405；内镜中心-90120
-SET @orderCode = '202508310001';
+SET @orderCode = '202511060002';
 -- 2. result表没有结果
 DROP TEMPORARY TABLE IF EXISTS temp_OrderIdLisLost;
 CREATE TEMPORARY TABLE temp_OrderIdLisLost AS
@@ -136,4 +136,6 @@ GROUP BY go.order_code, go.order_name, og.name, gp.test_num, gp.patient_id, gp.p
              WHEN gp.is_pass = 3 THEN '总检'
              ELSE '已完成'
          END
+				 
+	 having  GROUP_CONCAT( DISTINCT dr.group_item_name )  like '%常规心电图自动分析%'
 ORDER BY 序号, 分组名称, 检测项目;

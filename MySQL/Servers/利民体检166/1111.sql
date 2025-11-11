@@ -1,0 +1,1 @@
+call  p_healthy_result_ins_add('','f594102095fd9263b9ee22803eb3f4e5');

@@ -7,4 +7,4 @@ SELECT gp.test_num,
        hrul.status
 FROM healthy_result_update_list hrul
 left join t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp on gp.patient_id=hrul.patient_id
-WHERE hrul.order_application_id LIKE '%90001120771%'
+WHERE gp.patient_id='2025051085'

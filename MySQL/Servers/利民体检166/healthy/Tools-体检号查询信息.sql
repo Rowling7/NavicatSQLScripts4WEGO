@@ -10,9 +10,8 @@ SELECT DISTINCT
        -- dir.barcode
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
     LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON gp.id = dr.person_id
-WHERE gp.test_num in( '175657104300178')
-
- 
+WHERE gp.patient_id='2025051085'
+order by 申请合管号
  
  /*
  SELECT DISTINCT

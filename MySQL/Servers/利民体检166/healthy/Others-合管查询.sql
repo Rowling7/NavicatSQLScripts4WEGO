@@ -1,3 +1,5 @@
+set @testNum='176281696900419';
+
 SELECT p.test_num,p.person_name,e.barcode,ifnull(e.order_application_id,a.order_application_id),barname,ifnull(e.name,a.group_item_name)
 from  t_depart_result_f594102095fd9263b9ee22803eb3f4e5 a
 LEFT OUTER JOIN t_group_person_f594102095fd9263b9ee22803eb3f4e5 p ON a.person_id = p.id
@@ -38,7 +40,7 @@ LEFT OUTER JOIN (
 				e.office_id = '90405'
 				AND d.barcode IS NOT NULL
 				AND a.del_flag = 0
-			    AND b.test_num = '175919268800006'
+			    AND b.test_num = @testNum
 			) a
 		GROUP BY
 			person_id,
@@ -49,4 +51,4 @@ LEFT OUTER JOIN (
 		AND SUBSTRING_INDEX( a.NAME, ',', - 1 )= b.group_item_name
 	) e ON e.person_id = a.person_id
 	AND d.barcode = e.barcode
-where  p.test_num='175919268800006'
+where  p.test_num=@testNum;

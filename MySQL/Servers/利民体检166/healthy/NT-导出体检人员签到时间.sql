@@ -1,6 +1,6 @@
 SET @orderCode = '202511060002';
 SELECT DISTINCT
-    DENSE_RANK( ) OVER (ORDER BY gp.inspection_time,og.name,gp.patient_id ASC) AS 序号
+    DENSE_RANK( ) OVER (ORDER BY gp.inspection_time,og.name,gp.patient_id ASC) AS 去重序号
      -- go.order_code AS 订单号,
      -- go.order_name AS 订单名称,
      -- gp.id AS 体检ID,
@@ -30,11 +30,11 @@ WHERE dr.del_flag <> '1'
   AND go.del_flag <> '1'
   AND dir.office_id IN ( '90401' , '90402' , '90403' , '90404' , '90405' , '90120' )
   AND go.order_code = @orderCode
-  AND CAST( gp.inspection_time AS CHAR(10) ) = CAST( NOW( ) AS CHAR(10) )
+  AND CAST( gp.inspection_time AS CHAR(10) ) = CAST( NOW( ) AS CHAR(10) ) -- 当天时间
 GROUP BY go.order_code, go.order_name, og.name, gp.test_num, gp.patient_id, gp.person_name, gp.id_card
        , gp.inspection_time
 HAVING MIN( IFNULL( gp.inspection_time , dir.check_date ) ) IS NOT NULL
-ORDER BY 序号, 指引单打印时间;
+ORDER BY 去重序号, 指引单打印时间;
 
 
 

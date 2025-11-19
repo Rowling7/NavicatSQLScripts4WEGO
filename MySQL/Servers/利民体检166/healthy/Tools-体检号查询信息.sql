@@ -1,4 +1,4 @@
-SELECT DISTINCT
+/*SELECT DISTINCT
        gp.id AS ID,
        gp.person_name AS 姓名,
        gp.test_num AS 体检号,
@@ -10,9 +10,24 @@ SELECT DISTINCT
        -- dir.barcode
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
     LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON gp.id = dr.person_id
-WHERE gp.patient_id='2025051085'
-order by 申请合管号
+WHERE gp.test_num='176240884000233'
+			and dr.office_name='彩超室'
+order by 申请合管号;
+ */
  
+ 
+ 
+SELECT  lg.create_time,lg.`name`,lg.request_param
+from t_log_f594102095fd9263b9ee22803eb3f4e5 lg
+left join t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp on lg.patient_id=gp.patient_id and gp.del_flag <>1
+where lg.request_param like '%彩超腹部+泌尿+甲状腺%'
+and gp.test_num='176240884100242'
+and lg.log_type=2
+and lg.`name`='检查开立'
+order by create_time desc;
+
+
+/**/
  /*
  SELECT DISTINCT
        gp.id AS ID,

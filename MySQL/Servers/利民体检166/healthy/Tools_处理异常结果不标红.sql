@@ -6,7 +6,7 @@
  * 5. 检查重新执行时间和状态
  */
 
-SET @testNum = '176043017400006';
+SET @testNum = '176240883800155';
 SELECT @testNumR := id
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5
 WHERE test_num = @testNum;
@@ -14,9 +14,9 @@ WHERE test_num = @testNum;
 -- SET @groupItemName ='胸部CT（revolution）';
 -- SET @groupItemName = 'T-尿常规';
 -- SET @groupItemName ='常规心电图自动分析';
--- SET @groupItemName ='血常规';
+ SET @groupItemName ='血常规';
 -- SET @groupItemName ='T肝功5项';
-SET @groupItemName ='T肝功4项';
+-- SET @groupItemName ='T肝功4项';
 -- SET @groupItemName ='彩超腹部+甲状腺+乳腺+妇科';
 -- SET @groupItemName ='颈部血管彩超（颈动脉）';
 
@@ -37,7 +37,7 @@ SET status = 'pending',
 		retry_count ='0',
     is_completed = '0'
 WHERE order_application_id = @barcode 
-  and id='3cbafdb1-22f6-4a86-b6bf-9ed6c4d8bc79';
+  and id='c3997612-6f62-426c-aa90-c3dd1120c739';
 
 SELECT distinct hrul.patient_id HIS号, gp.person_name 姓名, hrul.order_application_id 申请单号,dir.order_group_item_name 项目, hrul.exec_time 执行时间,hrul.retry_count 执行次数, hrul.is_completed 完成状态, hrul.status 状态
 FROM healthy_result_update_list hrul

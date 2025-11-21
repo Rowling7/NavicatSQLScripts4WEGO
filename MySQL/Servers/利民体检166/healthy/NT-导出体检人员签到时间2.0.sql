@@ -1,4 +1,4 @@
-SET @orderCode = '202511060002';
+SET @orderCode = '202509300001';
 
 SELECT DISTINCT
     DENSE_RANK( ) OVER (ORDER BY gp.patient_id) AS 序号
@@ -24,7 +24,7 @@ WHERE dr.del_flag <> '1'
   AND go.order_code = @orderCode
 	-- or gp.test_num ='176240884500360'
   AND CAST( gp.inspection_time AS CHAR(10) ) <= CAST( NOW( ) AS CHAR(10) )
-	 and SUBSTRING(CAST( gp.inspection_time AS CHAR(19)), 12, 8) BETWEEN '06:00:00' AND '12:00:00'
+	-- and SUBSTRING(CAST( gp.inspection_time AS CHAR(19)), 12, 8) BETWEEN '06:00:00' AND '12:00:00'
 	-- and (og.name like  '%2025年东星集团套餐体检方案三-幽门螺旋杆菌检测（男）%')
 GROUP BY go.order_code, go.order_name, og.name, gp.test_num, gp.patient_id, gp.person_name, gp.id_card
        , gp.inspection_time

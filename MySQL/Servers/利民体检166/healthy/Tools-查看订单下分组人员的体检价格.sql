@@ -4,6 +4,7 @@ SELECT gp.test_num AS 体检号
      , SUM( ogi.discount_price ) AS 优惠价格
 		 -- , gp.group_id  AS 分组id
 		 , og.`name` AS 分组名称
+		 ,REGEXP_REPLACE(og.`name`, '-\\d+$', '') as cleaned_value
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5 gp
 left join t_order_group_f594102095fd9263b9ee22803eb3f4e5 og on gp.group_id=og.id
      LEFT JOIN t_order_group_item_f594102095fd9263b9ee22803eb3f4e5 ogi ON gp.group_id = ogi.group_id

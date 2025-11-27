@@ -1,4 +1,4 @@
-set @testNum='176360544300003';
+set @testNum='176420624300005';
 SELECT distinct 
 				gp.test_num,
        gp.person_name,
@@ -20,6 +20,7 @@ where  request_param like  concat ('%',@patientId,'%')
 	and `name` LIKE '%HL7Message%' 
 ORDER BY `create_time` DESC
 LIMIT 200
+
 /*
 # 3.查看更新进度
 SELECT gp.test_num,

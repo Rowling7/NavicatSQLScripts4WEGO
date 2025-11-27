@@ -1,5 +1,6 @@
-set @testNum='176420624300005';
+set @testNum='176420950100010';
 SELECT distinct 
+				gp.id,
 				gp.test_num,
        gp.person_name,
        @patientId := gp.patient_id,

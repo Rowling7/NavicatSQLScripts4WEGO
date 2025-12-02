@@ -9,4 +9,4 @@ LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id
 WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
-	and gp.test_num ='176240883600097';
+	and gp.test_num ='176463676900024';

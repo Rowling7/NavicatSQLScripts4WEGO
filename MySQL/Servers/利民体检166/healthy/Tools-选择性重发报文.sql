@@ -1,4 +1,4 @@
-set @testNum='175911338100002';
+set @testNum='176465757100053';
 SELECT distinct 
 				gp.id,
 				gp.test_num,

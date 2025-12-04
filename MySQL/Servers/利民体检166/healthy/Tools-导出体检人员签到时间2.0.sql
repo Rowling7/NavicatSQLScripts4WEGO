@@ -1,4 +1,4 @@
-SET @orderCode = '202509300001';
+SET @orderCode = '202509160001';
 
 SELECT DISTINCT
     DENSE_RANK( ) OVER (ORDER BY gp.patient_id) AS 序号
@@ -29,4 +29,4 @@ WHERE dr.del_flag <> '1'
 GROUP BY go.order_code, go.order_name, og.name, gp.test_num, gp.patient_id, gp.person_name, gp.id_card
        , gp.inspection_time
 HAVING MIN( IFNULL( gp.inspection_time , dir.check_date ) ) IS NOT NULL
--- order by CAST( gp.inspection_time AS CHAR )
+order by CAST( gp.inspection_time AS CHAR )

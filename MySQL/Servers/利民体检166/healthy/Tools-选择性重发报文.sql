@@ -13,7 +13,7 @@ LEFT JOIN t_depart_result_f594102095fd9263b9ee22803eb3f4e5 dr ON gp.id = dr.pers
 left join t_log_f594102095fd9263b9ee22803eb3f4e5 lg on lg.order_application_id=dr.barcode and `name` LIKE '%HL7Message%' 
 WHERE gp.test_num = @testNum
 order by dr.barname,dr.create_date;
-
+/*
 # 2.查找需要的报文
 SELECT create_time,request_param
 FROM t_log_f594102095fd9263b9ee22803eb3f4e5
@@ -21,7 +21,7 @@ where  request_param like  concat ('%',@patientId,'%')
 	and `name` LIKE '%HL7Message%' 
 ORDER BY `create_time` DESC
 LIMIT 200
-
+*/
 /*
 # 3.查看更新进度
 SELECT gp.test_num,

@@ -18,7 +18,7 @@ WHERE gp.del_flag <> '1'
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
 	AND dr.del_flag <> '1'
-	AND gp.test_num='175924507200238'
+	AND gp.test_num='175924507400307'
 			-- and dr.office_name='彩超室'
 order by 申请合管号;
 

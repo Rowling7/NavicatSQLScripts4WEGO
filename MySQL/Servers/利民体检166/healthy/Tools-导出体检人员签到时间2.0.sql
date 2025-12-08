@@ -1,4 +1,4 @@
-SET @orderCode = '202509160001';
+SET @orderCode = '202511070001';
 
 SELECT DISTINCT
     DENSE_RANK( ) OVER (ORDER BY gp.patient_id) AS 序号
@@ -28,5 +28,6 @@ WHERE dr.del_flag <> '1'
 	-- and (og.name like  '%2025年东星集团套餐体检方案三-幽门螺旋杆菌检测（男）%')
 GROUP BY go.order_code, go.order_name, og.name, gp.test_num, gp.patient_id, gp.person_name, gp.id_card
        , gp.inspection_time
-HAVING MIN( IFNULL( gp.inspection_time , dir.check_date ) ) IS NOT NULL
+-- HAVING MIN( IFNULL( gp.inspection_time , dir.check_date ) ) IS NOT NULL
+HAVING CAST( MIN( dir.check_date ) AS CHAR ) IS NOT NULL
 order by CAST( gp.inspection_time AS CHAR )

@@ -10,9 +10,11 @@ FROM t_positive_person_f594102095fd9263b9ee22803eb3f4e5 pp
 WHERE pp.del_flag <> 1
   AND og.del_flag <> '1'
   AND go.del_flag <> '1'
-	AND pp.positive_name REGEXP '^\\d+'-- 匹配连字符，\\d+ 匹配 1 个及以上数字（MySQL 中 \d 需转义为 \\d），^ 匹配字符串开头
-  AND pp.positive_name REGEXP '\\d+$'-- $ 匹配字符串末尾。
-  -- and pp.positive_name REGEXP '[0-9]' 
+	-- AND pp.positive_name not REGEXP '^[0-9]'-- [0-9]+ 匹配 1 个及以上数字，^ 匹配字符串开头
+  AND pp.positive_name REGEXP '[0-9]+$'-- $ 匹配字符串末尾。
+	AND pp.positive_name not REGEXP '\\+[0-9]+$' -- 不匹配 +1  +2 结尾的值
+  -- and pp.positive_name REGEXP '[0-9]+'  -- $ 匹配字符串任意包含多个数字
+	-- and pp.positive_name REGEXP '\\+[0-9]+' -- 第一个\是转义给MYSQL ,第二个\转义给正则 第二个+代表重复多次 ,匹配+1  +10
 	-- and pp.positive_name REGEXP REGEXP '\\d' -- [0-9]和\\d 匹配任意单个数字，只要字段中存在至少一个数字就会匹配
   -- and gp.is_pass >=3
   AND go.id = '2e589ff7efc16d802d33afa48d0ec92a'

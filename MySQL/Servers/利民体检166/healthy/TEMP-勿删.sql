@@ -41,6 +41,7 @@ group by dir.person_id
 -- count(if(gp.sex,'男',1)),
 
 SELECT cb.`name` AS 套餐名称
+			,cb.id as 套餐ID
      , ci.portfolio_project_id AS 组合项目ID
      , ppb.`name` AS 实际小项名称
      , pp.id AS 当前小项ID
@@ -52,4 +53,5 @@ FROM t_combo_f594102095fd9263b9ee22803eb3f4e5 cb
 		 LEFT JOIN t_portfolio_project_f594102095fd9263b9ee22803eb3f4e5 pp2 ON ci.portfolio_project_id = pp2.id and pp2.del_flag<>1
 WHERE pp2.`name` IS NULL
 	and cb.del_flag<>1	
+	-- and ppb.`name` ='体检专用肠镜（普通）'
 ORDER BY ppb.`name`

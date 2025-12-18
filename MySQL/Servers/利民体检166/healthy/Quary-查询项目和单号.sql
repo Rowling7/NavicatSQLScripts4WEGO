@@ -1,4 +1,4 @@
-set @testNum='176465757100053';
+set @testNum='175800937402814';
 SELECT distinct 
 				gp.id,
 				gp.test_num,
@@ -22,7 +22,7 @@ where  request_param like  concat ('%',@patientId,'%')
 ORDER BY `create_time` DESC
 LIMIT 200
 */
-/*
+
 # 3.查看更新进度
 SELECT gp.test_num,
 			 hrul.patient_id,
@@ -30,6 +30,7 @@ SELECT gp.test_num,
        hrul.order_application_id,
        dr.group_item_name,
        left(hrul.create_time,19),
+			 left(hrul.exec_time,19),
        hrul.is_completed,
        hrul.`status`
 FROM healthy_result_update_list hrul
@@ -38,4 +39,3 @@ FROM healthy_result_update_list hrul
 WHERE gp.test_num =@testNum
 order by left(hrul.create_time,19) desc;
 
-*/

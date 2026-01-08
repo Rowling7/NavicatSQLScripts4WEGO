@@ -1,0 +1,43 @@
+{
+  "Version": 1.1,
+  "General": {
+    "Project": "",
+    "ProjectOwnerNavicatID": "",
+    "Server": "Sqlite3_Pitaya",
+    "Catalog": "",
+    "Schema": "main",
+    "ExportType": "DBase",
+    "ExportDirectoryBookmark": "",
+    "ExportDirectoryPath": "",
+    "TargetCodepage": 65001,
+    "AddTimeStamp": false,
+    "TimeStampFormat": "",
+    "IncludeTitle": true,
+    "FieldDelimiter": "\t",
+    "DateFormat": "DMY",
+    "DateSeparator": "/",
+    "ZeroPaddingDate": false,
+    "TimeSeparator": ":",
+    "DecimalSeparator": ".",
+    "TextQualifier": "\"",
+    "RowDelimiter": "CRLF",
+    "XMLFormat": "Element",
+    "UseBase64": true,
+    "AppendRecord": false,
+    "BlankIfZero": false,
+    "ContinueOnError": true,
+    "CloudInstanceName": ""
+  },
+  "Objects": [
+    {
+      "Object": {
+        "Name": "A7001",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "A7001",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\A7001.dbf",
+      "AllFields": true,
+      "Fields": []
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "Version": 1.1,
+  "General": {
+    "Project": "",
+    "ProjectOwnerNavicatID": "",
+    "Server": "Sqlite3_Pitaya",
+    "Catalog": "",
+    "Schema": "main",
+    "ExportType": "SQL",
+    "ExportDirectoryBookmark": "",
+    "ExportDirectoryPath": "",
+    "TargetCodepage": 65001,
+    "AddTimeStamp": false,
+    "TimeStampFormat": "",
+    "IncludeTitle": true,
+    "FieldDelimiter": "\t",
+    "DateFormat": "DMY",
+    "DateSeparator": "/",
+    "ZeroPaddingDate": false,
+    "TimeSeparator": ":",
+    "DecimalSeparator": ".",
+    "TextQualifier": "\"",
+    "RowDelimiter": "CRLF",
+    "XMLFormat": "Element",
+    "UseBase64": true,
+    "AppendRecord": false,
+    "BlankIfZero": false,
+    "ContinueOnError": true,
+    "CloudInstanceName": ""
+  },
+  "Objects": [
+    {
+      "Object": {
+        "Name": "background",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "background",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\background.sql",
+      "AllFields": true,
+      "Fields": []
+    },
+    {
+      "Object": {
+        "Name": "backupACC",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "backupACC",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\backupACC.sql",
+      "AllFields": true,
+      "Fields": []
+    },
+    {
+      "Object": {
+        "Name": "hotPoint",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "hotPoint",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\hotPoint.sql",
+      "AllFields": true,
+      "Fields": []
+    },
+    {
+      "Object": {
+        "Name": "routeCar",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "routeCar",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\routeCar.sql",
+      "AllFields": true,
+      "Fields": []
+    },
+    {
+      "Object": {
+        "Name": "routeLine",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "routeLine",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\routeLine.sql",
+      "AllFields": true,
+      "Fields": []
+    },
+    {
+      "Object": {
+        "Name": "routePoint",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "routePoint",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\routePoint.sql",
+      "AllFields": true,
+      "Fields": []
+    },
+    {
+      "Object": {
+        "Name": "worktime",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "worktime",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\worktime.sql",
+      "AllFields": true,
+      "Fields": []
+    },
+    {
+      "Object": {
+        "Name": "ZZ01",
+        "ObjectType": "Table_SQLITE"
+      },
+      "TargetName": "ZZ01",
+      "TargetFilePath": "C:\\Users\\WEGO0313\\Desktop\\ZZ01.sql",
+      "AllFields": true,
+      "Fields": []
+    }
+  ]
+}

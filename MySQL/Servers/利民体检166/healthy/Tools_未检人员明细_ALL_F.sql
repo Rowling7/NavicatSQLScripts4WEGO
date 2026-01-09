@@ -40,7 +40,7 @@ WHERE gp.del_flag <> '1'
   AND go.order_code = @orderCode
 GROUP BY dir.barcode, dir.office_id
 HAVING SUM( ISNULL( result ) ) = COUNT( 1 ); -- 全部未检
--- HAVING SUM(ISNULL(result)) <> COUNT(1);  --有检
+-- HAVING SUM(ISNULL(result)) <> COUNT(1);  -- 有检
 
 
 -- 3.LOG表没有回传报文，result表没有结果

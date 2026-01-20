@@ -16,6 +16,8 @@ dim_positive AS (
       AND a.del_flag = 0
       AND b.del_flag = 0
       AND b.is_pass > 2
+			-- and b.id <>'b96eb73c7c984615bc6d300676d7ff6e' -- 去除重名
+			-- and b.person_name IN ('姜辉','路笃山','毕彦斌','张春光','谷欣欣','夏茜','董光宇','于群','赵鑫杰','苗爱煜','于晓谕','刘琳','田野','董伟','黄艳丽','于学良','阎萌蕾','李明阳','邴丛丛','郭可可','魏清荃','商敬贵','陈志红')
 ),
 dim_all AS (
     SELECT p.positive_name, a.age_group
@@ -41,6 +43,8 @@ base AS (
       AND a.del_flag = 0
       AND b.del_flag = 0
       AND b.is_pass > 2
+			-- and b.id <>'b96eb73c7c984615bc6d300676d7ff6e' -- 去除重名
+			-- and b.person_name IN ('姜辉','路笃山','毕彦斌','张春光','谷欣欣','夏茜','董光宇','于群','赵鑫杰','苗爱煜','于晓谕','刘琳','田野','董伟','黄艳丽','于学良','阎萌蕾','李明阳','邴丛丛','郭可可','魏清荃','商敬贵','陈志红')
 ),
 total AS (
     SELECT 
@@ -59,6 +63,8 @@ total AS (
     WHERE dept = '恒科精工2025'
       AND del_flag = 0
       AND is_pass > 2
+			-- and id <>'b96eb73c7c984615bc6d300676d7ff6e' -- 去除重名
+			-- and person_name IN ('姜辉','路笃山','毕彦斌','张春光','谷欣欣','夏茜','董光宇','于群','赵鑫杰','苗爱煜','于晓谕','刘琳','田野','董伟','黄艳丽','于学良','阎萌蕾','李明阳','邴丛丛','郭可可','魏清荃','商敬贵','陈志红')
     GROUP BY sex, age_group
 ),
 

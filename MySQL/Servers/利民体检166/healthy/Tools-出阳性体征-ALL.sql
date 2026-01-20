@@ -67,7 +67,9 @@ FROM (
         LEFT JOIN t_order_group_f594102095fd9263b9ee22803eb3f4e5 og ON gp.group_id = og.id AND og.del_flag != '1'
         LEFT JOIN t_group_order_f594102095fd9263b9ee22803eb3f4e5 go ON og.group_order_id = go.id AND go.del_flag != '1'
     WHERE gp.del_flag != '1'
-      AND go.order_code IN ('202509100002')
+      AND go.order_code IN ('202511070001')
+			-- and gp.id <>'b96eb73c7c984615bc6d300676d7ff6e'
+			-- and gp.person_name IN ('姜辉','路笃山','毕彦斌','张春光','谷欣欣','夏茜','董光宇','于群','赵鑫杰','苗爱煜','于晓谕','刘琳','田野','董伟','黄艳丽','于学良','阎萌蕾','李明阳','邴丛丛','郭可可','魏清荃','商敬贵','陈志红')
     -- AND pp.positive_name != '本次体检所查项目未发现异常'
 ) t
 GROUP BY

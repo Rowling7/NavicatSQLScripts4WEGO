@@ -6,7 +6,7 @@
  * 5. 检查重新执行时间和状态
  */
 
-SET @testNum = '176240883800155';
+SET @testNum = '176878172500226';
 SELECT @testNumR := id
 FROM t_group_person_f594102095fd9263b9ee22803eb3f4e5
 WHERE test_num = @testNum;
@@ -14,8 +14,8 @@ WHERE test_num = @testNum;
 -- SET @groupItemName ='胸部CT（revolution）';
 -- SET @groupItemName = 'T-尿常规';
 -- SET @groupItemName ='常规心电图自动分析';
- SET @groupItemName ='血常规';
--- SET @groupItemName ='T肝功5项';
+-- SET @groupItemName ='血常规';
+SET @groupItemName ='T肝功5项';
 -- SET @groupItemName ='T肝功4项';
 -- SET @groupItemName ='彩超腹部+甲状腺+乳腺+妇科';
 -- SET @groupItemName ='颈部血管彩超（颈动脉）';

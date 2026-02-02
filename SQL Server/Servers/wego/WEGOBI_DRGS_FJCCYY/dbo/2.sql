@@ -1,0 +1,7 @@
+t_setlinfo
+t_setlinfo_diseinfo
+t_setlinfo_oprninfo
+t_setlinfo_iteminfo
+t_setlinfo_payinfo
+t_setlinfo_icuinfo
+t_setlinfo_bldinfo

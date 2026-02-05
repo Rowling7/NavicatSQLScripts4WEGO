@@ -52,3 +52,13 @@ SELECT
 			, [fulamt_ownpay_amt]
 			, [oth_amt]
 FROM t_setlinfo_iteminfo_mid;
+
+
+
+USE [master]
+RESTORE DATABASE [WEGOBI_DRGS_FJCCYY] FROM  DISK = N'D:\00145740 CYS\1.日常文件\20260204 泉州字段数值核对\wegobi_drgs_fjccyy.bak' WITH  REPLACE, 
+MOVE N'WEGOBI_DRGS_FJCCYY' TO N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\WEGOBI_DRGS_FJCCYY.mdf',  
+MOVE N'WEGOBI_DRGS_FJCCYY_log' TO N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\WEGOBI_DRGS_FJCCYY_log.ldf',  NOUNLOAD,  STATS = 5
+
+GO
+
